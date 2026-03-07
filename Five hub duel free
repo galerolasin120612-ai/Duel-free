@@ -1083,24 +1083,23 @@ end
 -- GUI - WHITE NEON THEME
 -- ============================================
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-local guiScale = isMobile and 0.4 or 1
+local guiScale = isMobile and 0.45 or 1.15
 
 -- *** WHITE NEON COLOR PALETTE ***
 local C = {
     bg          = Color3.fromRGB(2, 2, 4),
-    purple      = Color3.fromRGB(255, 255, 255),       -- white neon (main toggle ON)
-    purpleLight  = Color3.fromRGB(210, 220, 240),       -- cool silver-white
-    purpleDark   = Color3.fromRGB(160, 170, 195),       -- muted silver
-    purpleGlow   = Color3.fromRGB(255, 255, 255),       -- pure white glow
+    purple      = Color3.fromRGB(255, 255, 255),
+    purpleLight  = Color3.fromRGB(210, 220, 240),
+    purpleDark   = Color3.fromRGB(160, 170, 195),
+    purpleGlow   = Color3.fromRGB(255, 255, 255),
     accent      = Color3.fromRGB(255, 255, 255),
     text        = Color3.fromRGB(255, 255, 255),
-    textDim     = Color3.fromRGB(170, 185, 215),       -- soft silver
+    textDim     = Color3.fromRGB(170, 185, 215),
     success     = Color3.fromRGB(34, 197, 94),
     danger      = Color3.fromRGB(239, 68, 68),
     border      = Color3.fromRGB(140, 155, 185)
 }
 
--- Neon white stroke colors
 local STROKE_BRIGHT = Color3.fromRGB(255, 255, 255)
 local STROKE_MID    = Color3.fromRGB(200, 215, 240)
 local STROKE_OFF    = Color3.fromRGB(0, 0, 0)
@@ -1121,7 +1120,6 @@ local function playSound(id, vol, spd)
     end)
 end
 
--- Progress Bar
 local progressBar = Instance.new("Frame", sg)
 progressBar.Size = UDim2.new(0, 420 * guiScale, 0, 56 * guiScale)
 progressBar.Position = UDim2.new(0.5, -210 * guiScale, 1, -168 * guiScale)
@@ -1149,7 +1147,6 @@ task.spawn(function()
     end
 end)
 
--- White neon floating particles - progress bar
 for i = 1, 12 do
     local ball = Instance.new("Frame", progressBar)
     ball.Size = UDim2.new(0, math.random(2, 3), 0, math.random(2, 3))
@@ -1159,7 +1156,6 @@ for i = 1, 12 do
     ball.BorderSizePixel = 0
     ball.ZIndex = 1
     Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
-    
     task.spawn(function()
         local startX = ball.Position.X.Scale
         local startY = ball.Position.Y.Scale
@@ -1224,11 +1220,10 @@ Instance.new("UICorner", pTrack).CornerRadius = UDim.new(1, 0)
 
 ProgressBarFill = Instance.new("Frame", pTrack)
 ProgressBarFill.Size = UDim2.new(0, 0, 1, 0)
-ProgressBarFill.BackgroundColor3 = C.purple  -- white neon fill
+ProgressBarFill.BackgroundColor3 = C.purple
 ProgressBarFill.ZIndex = 2
 Instance.new("UICorner", ProgressBarFill).CornerRadius = UDim.new(1, 0)
 
--- Main Window
 local main = Instance.new("Frame", sg)
 main.Name = "Main"
 main.Size = UDim2.new(0, 560 * guiScale, 0, 740 * guiScale)
@@ -1260,7 +1255,6 @@ task.spawn(function()
     end
 end)
 
--- White neon floating particles - main window
 for i = 1, 60 do
     local ball = Instance.new("Frame", main)
     ball.Size = UDim2.new(0, math.random(2, 4), 0, math.random(2, 4))
@@ -1270,7 +1264,6 @@ for i = 1, 60 do
     ball.BorderSizePixel = 0
     ball.ZIndex = 2
     Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
-    
     task.spawn(function()
         local startX = ball.Position.X.Scale
         local startY = ball.Position.Y.Scale
@@ -1287,7 +1280,6 @@ for i = 1, 60 do
     end)
 end
 
--- Header
 local header = Instance.new("Frame", main)
 header.Size = UDim2.new(1, 0, 0, 70 * guiScale)
 header.BackgroundTransparency = 1
@@ -1298,7 +1290,7 @@ local titleLabel = Instance.new("TextLabel", header)
 titleLabel.Size = UDim2.new(1, 0, 0, 32 * guiScale)
 titleLabel.Position = UDim2.new(0, 0, 0, 10 * guiScale)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "SKY DUELS"
+titleLabel.Text = "FIVE DUELS"
 titleLabel.TextColor3 = C.text
 titleLabel.Font = Enum.Font.GothamBlack
 titleLabel.TextSize = 28 * guiScale
@@ -1309,7 +1301,7 @@ local subtitleLabel = Instance.new("TextLabel", header)
 subtitleLabel.Size = UDim2.new(1, 0, 0, 24 * guiScale)
 subtitleLabel.Position = UDim2.new(0, 0, 0, 40 * guiScale)
 subtitleLabel.BackgroundTransparency = 1
-subtitleLabel.Text = "discord.gg/sky-hub"
+subtitleLabel.Text = "free"
 subtitleLabel.TextColor3 = C.purpleLight
 subtitleLabel.Font = Enum.Font.GothamBold
 subtitleLabel.TextSize = 16 * guiScale
@@ -1320,7 +1312,7 @@ local closeBtn = Instance.new("TextButton", header)
 closeBtn.Size = UDim2.new(0, 36 * guiScale, 0, 36 * guiScale)
 closeBtn.Position = UDim2.new(1, -46 * guiScale, 0.5, -18 * guiScale)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Text = "Ã—"
+closeBtn.Text = "×"
 closeBtn.TextColor3 = C.textDim
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.TextSize = 24 * guiScale
@@ -1351,7 +1343,6 @@ local SliderSetters = {}
 local KeyButtons = {}
 local waitingForKeybind = nil
 
--- TOGGLE WITH KEYBIND - WHITE NEON
 local function createToggleWithKey(parent, yPos, labelText, keybindKey, enabledKey, callback, specialColor)
     local row = Instance.new("Frame", parent)
     row.Size = UDim2.new(1, -10 * guiScale, 0, 48 * guiScale)
@@ -1359,20 +1350,17 @@ local function createToggleWithKey(parent, yPos, labelText, keybindKey, enabledK
     row.BackgroundTransparency = 1
     row.BorderSizePixel = 0
     row.ZIndex = 3
-    
     local keyBtn = Instance.new("TextButton", row)
     keyBtn.Size = UDim2.new(0, 36 * guiScale, 0, 28 * guiScale)
     keyBtn.Position = UDim2.new(0, 3 * guiScale, 0.5, -14 * guiScale)
-    keyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- white button
+    keyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     keyBtn.Text = KEYBINDS[keybindKey].Name
-    keyBtn.TextColor3 = Color3.fromRGB(5, 5, 10)             -- dark text on white
+    keyBtn.TextColor3 = Color3.fromRGB(5, 5, 10)
     keyBtn.Font = Enum.Font.GothamBold
     keyBtn.TextSize = 11 * guiScale
     keyBtn.ZIndex = 4
     Instance.new("UICorner", keyBtn).CornerRadius = UDim.new(0, 8 * guiScale)
-    
     KeyButtons[keybindKey] = keyBtn
-    
     local label = Instance.new("TextLabel", row)
     label.Size = UDim2.new(0.55, 0, 1, 0)
     label.Position = UDim2.new(0, 45 * guiScale, 0, 0)
@@ -1383,61 +1371,48 @@ local function createToggleWithKey(parent, yPos, labelText, keybindKey, enabledK
     label.TextSize = 14 * guiScale
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.ZIndex = 4
-    
     local onColor = specialColor or C.purple
     local defaultOn = Enabled[enabledKey]
-    
     local toggleBg = Instance.new("Frame", row)
     toggleBg.Size = UDim2.new(0, 50 * guiScale, 0, 26 * guiScale)
     toggleBg.Position = UDim2.new(1, -58 * guiScale, 0.5, -13 * guiScale)
     toggleBg.BackgroundColor3 = defaultOn and onColor or Color3.fromRGB(18, 15, 28)
     toggleBg.ZIndex = 4
     Instance.new("UICorner", toggleBg).CornerRadius = UDim.new(1, 0)
-    
     local toggleCircle = Instance.new("Frame", toggleBg)
     toggleCircle.Size = UDim2.new(0, 20 * guiScale, 0, 20 * guiScale)
     toggleCircle.Position = defaultOn and UDim2.new(1, -23 * guiScale, 0.5, -10 * guiScale) or UDim2.new(0, 3 * guiScale, 0.5, -10 * guiScale)
     toggleCircle.BackgroundColor3 = Color3.new(1, 1, 1)
     toggleCircle.ZIndex = 5
     Instance.new("UICorner", toggleCircle).CornerRadius = UDim.new(1, 0)
-    
     local clickBtn = Instance.new("TextButton", row)
     clickBtn.Size = UDim2.new(0.6, 0, 1, 0)
     clickBtn.Position = UDim2.new(0.4, 0, 0, 0)
     clickBtn.BackgroundTransparency = 1
     clickBtn.Text = ""
     clickBtn.ZIndex = 6
-    
     local isOn = defaultOn
-    
     local function setVisual(state, skipCallback)
         isOn = state
         TweenService:Create(toggleBg, TweenInfo.new(0.3), {BackgroundColor3 = isOn and onColor or Color3.fromRGB(18, 15, 28)}):Play()
         TweenService:Create(toggleCircle, TweenInfo.new(0.3, Enum.EasingStyle.Back), {Position = isOn and UDim2.new(1, -23 * guiScale, 0.5, -10 * guiScale) or UDim2.new(0, 3 * guiScale, 0.5, -10 * guiScale)}):Play()
-        if not skipCallback then
-            callback(isOn)
-        end
+        if not skipCallback then callback(isOn) end
     end
-    
     VisualSetters[enabledKey] = setVisual
-    
     clickBtn.MouseButton1Click:Connect(function()
         isOn = not isOn
         Enabled[enabledKey] = isOn
         setVisual(isOn)
         playSound("rbxassetid://6895079813", 0.4, 1)
     end)
-    
     keyBtn.MouseButton1Click:Connect(function()
         waitingForKeybind = keybindKey
         keyBtn.Text = "..."
         playSound("rbxassetid://6895079813", 0.3, 1.5)
     end)
-    
     return row, enabledKey, function() return isOn end, setVisual, keyBtn
 end
 
--- PLAIN TOGGLE - WHITE NEON
 local function createToggle(parent, yPos, labelText, enabledKey, callback, specialColor)
     local row = Instance.new("Frame", parent)
     row.Size = UDim2.new(1, -10 * guiScale, 0, 48 * guiScale)
@@ -1445,7 +1420,6 @@ local function createToggle(parent, yPos, labelText, enabledKey, callback, speci
     row.BackgroundTransparency = 1
     row.BorderSizePixel = 0
     row.ZIndex = 3
-    
     local label = Instance.new("TextLabel", row)
     label.Size = UDim2.new(0.7, 0, 1, 0)
     label.Position = UDim2.new(0, 10 * guiScale, 0, 0)
@@ -1456,54 +1430,42 @@ local function createToggle(parent, yPos, labelText, enabledKey, callback, speci
     label.TextSize = 14 * guiScale
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.ZIndex = 4
-    
     local onColor = specialColor or C.purple
     local defaultOn = Enabled[enabledKey]
-    
     local toggleBg = Instance.new("Frame", row)
     toggleBg.Size = UDim2.new(0, 50 * guiScale, 0, 26 * guiScale)
     toggleBg.Position = UDim2.new(1, -58 * guiScale, 0.5, -13 * guiScale)
     toggleBg.BackgroundColor3 = defaultOn and onColor or Color3.fromRGB(18, 15, 28)
     toggleBg.ZIndex = 4
     Instance.new("UICorner", toggleBg).CornerRadius = UDim.new(1, 0)
-    
     local toggleCircle = Instance.new("Frame", toggleBg)
     toggleCircle.Size = UDim2.new(0, 20 * guiScale, 0, 20 * guiScale)
     toggleCircle.Position = defaultOn and UDim2.new(1, -23 * guiScale, 0.5, -10 * guiScale) or UDim2.new(0, 3 * guiScale, 0.5, -10 * guiScale)
     toggleCircle.BackgroundColor3 = Color3.new(1, 1, 1)
     toggleCircle.ZIndex = 5
     Instance.new("UICorner", toggleCircle).CornerRadius = UDim.new(1, 0)
-    
     local clickBtn = Instance.new("TextButton", row)
     clickBtn.Size = UDim2.new(1, 0, 1, 0)
     clickBtn.BackgroundTransparency = 1
     clickBtn.Text = ""
     clickBtn.ZIndex = 6
-    
     local isOn = defaultOn
-    
     local function setVisual(state, skipCallback)
         isOn = state
         TweenService:Create(toggleBg, TweenInfo.new(0.3), {BackgroundColor3 = isOn and onColor or Color3.fromRGB(18, 15, 28)}):Play()
         TweenService:Create(toggleCircle, TweenInfo.new(0.3, Enum.EasingStyle.Back), {Position = isOn and UDim2.new(1, -23 * guiScale, 0.5, -10 * guiScale) or UDim2.new(0, 3 * guiScale, 0.5, -10 * guiScale)}):Play()
-        if not skipCallback then
-            callback(isOn)
-        end
+        if not skipCallback then callback(isOn) end
     end
-    
     VisualSetters[enabledKey] = setVisual
-    
     clickBtn.MouseButton1Click:Connect(function()
         isOn = not isOn
         Enabled[enabledKey] = isOn
         setVisual(isOn)
         playSound("rbxassetid://6895079813", 0.4, 1)
     end)
-    
     return row, enabledKey, function() return isOn end, setVisual
 end
 
--- SLIDER - WHITE NEON
 local function createSlider(parent, yPos, labelText, minVal, maxVal, valueKey, callback)
     local container = Instance.new("Frame", parent)
     container.Size = UDim2.new(1, -10 * guiScale, 0, 56 * guiScale)
@@ -1511,7 +1473,6 @@ local function createSlider(parent, yPos, labelText, minVal, maxVal, valueKey, c
     container.BackgroundTransparency = 1
     container.BorderSizePixel = 0
     container.ZIndex = 3
-    
     local label = Instance.new("TextLabel", container)
     label.Size = UDim2.new(0.6, 0, 0, 20 * guiScale)
     label.Position = UDim2.new(0, 10 * guiScale, 0, 4 * guiScale)
@@ -1522,9 +1483,7 @@ local function createSlider(parent, yPos, labelText, minVal, maxVal, valueKey, c
     label.TextSize = 12 * guiScale
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.ZIndex = 4
-    
     local defaultVal = Values[valueKey]
-    
     local valueInput = Instance.new("TextBox", container)
     valueInput.Size = UDim2.new(0, 50 * guiScale, 0, 22 * guiScale)
     valueInput.Position = UDim2.new(1, -58 * guiScale, 0, 2 * guiScale)
@@ -1536,38 +1495,31 @@ local function createSlider(parent, yPos, labelText, minVal, maxVal, valueKey, c
     valueInput.ClearTextOnFocus = false
     valueInput.ZIndex = 4
     Instance.new("UICorner", valueInput).CornerRadius = UDim.new(0, 6 * guiScale)
-    
     local sliderBg = Instance.new("Frame", container)
     sliderBg.Size = UDim2.new(0.92, 0, 0, 10 * guiScale)
     sliderBg.Position = UDim2.new(0.04, 0, 0, 32 * guiScale)
     sliderBg.BackgroundColor3 = Color3.fromRGB(12, 10, 20)
     sliderBg.ZIndex = 4
     Instance.new("UICorner", sliderBg).CornerRadius = UDim.new(1, 0)
-    
     local pct = (defaultVal - minVal) / (maxVal - minVal)
-    
     local sliderFill = Instance.new("Frame", sliderBg)
     sliderFill.Size = UDim2.new(pct, 0, 1, 0)
-    sliderFill.BackgroundColor3 = C.purple  -- white fill
+    sliderFill.BackgroundColor3 = C.purple
     sliderFill.ZIndex = 5
     Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(1, 0)
-    
     local thumb = Instance.new("Frame", sliderBg)
     thumb.Size = UDim2.new(0, 16 * guiScale, 0, 16 * guiScale)
     thumb.Position = UDim2.new(pct, -8 * guiScale, 0.5, -8 * guiScale)
     thumb.BackgroundColor3 = Color3.new(1, 1, 1)
     thumb.ZIndex = 6
     Instance.new("UICorner", thumb).CornerRadius = UDim.new(1, 0)
-    
     local sliderBtn = Instance.new("TextButton", sliderBg)
     sliderBtn.Size = UDim2.new(1, 0, 3, 0)
     sliderBtn.Position = UDim2.new(0, 0, -1, 0)
     sliderBtn.BackgroundTransparency = 1
     sliderBtn.Text = ""
     sliderBtn.ZIndex = 7
-    
     local dragging = false
-    
     local function updateSlider(rel, skipCallback)
         rel = math.clamp(rel, 0, 1)
         sliderFill.Size = UDim2.new(rel, 0, 1, 0)
@@ -1575,11 +1527,8 @@ local function createSlider(parent, yPos, labelText, minVal, maxVal, valueKey, c
         local val = math.floor(minVal + (maxVal - minVal) * rel)
         valueInput.Text = tostring(val)
         Values[valueKey] = val
-        if not skipCallback then
-            callback(val)
-        end
+        if not skipCallback then callback(val) end
     end
-    
     local function setSliderValue(val)
         val = math.clamp(val, minVal, maxVal)
         local rel = (val - minVal) / (maxVal - minVal)
@@ -1588,23 +1537,18 @@ local function createSlider(parent, yPos, labelText, minVal, maxVal, valueKey, c
         valueInput.Text = tostring(val)
         Values[valueKey] = val
     end
-    
     SliderSetters[valueKey] = setSliderValue
-    
     sliderBtn.MouseButton1Down:Connect(function() dragging = true end)
-    
     UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = false
         end
     end)
-    
     UserInputService.InputChanged:Connect(function(input)
         if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             updateSlider((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X)
         end
     end)
-    
     valueInput.FocusLost:Connect(function()
         local n = tonumber(valueInput.Text)
         if n then
@@ -1617,7 +1561,6 @@ local function createSlider(parent, yPos, labelText, minVal, maxVal, valueKey, c
             callback(n)
         end
     end)
-    
     return container, setSliderValue
 end
 
@@ -1660,7 +1603,7 @@ end, C.danger)
 createToggle(leftSide, 484, "Galaxy Sky Bright", "GalaxySkyBright", function(s)
     Enabled.GalaxySkyBright = s
     if s then enableGalaxySkyBright() else disableGalaxySkyBright() end
-end, Color3.fromRGB(220, 225, 255))  -- soft white-purple for galaxy
+end, Color3.fromRGB(220, 225, 255))
 
 -- Right side
 createToggleWithKey(rightSide, 0, "Galaxy Mode", "GALAXY", "Galaxy", function(s)
@@ -1697,23 +1640,22 @@ createToggleWithKey(rightSide, 388, "Auto Left", "AUTOLEFT", "AutoWalkEnabled", 
     AutoWalkEnabled = s
     Enabled.AutoWalkEnabled = s
     if s then startAutoWalk() else stopAutoWalk() end
-end, Color3.fromRGB(200, 215, 255))  -- cool white
+end, Color3.fromRGB(200, 215, 255))
 _G.setAutoLeftVisual = VisualSetters.AutoWalkEnabled
 
 createToggleWithKey(rightSide, 440, "Auto Right", "AUTORIGHT", "AutoRightEnabled", function(s)
     AutoRightEnabled = s
     Enabled.AutoRightEnabled = s
     if s then startAutoRight() else stopAutoRight() end
-end, Color3.fromRGB(220, 230, 255))  -- slightly different white
+end, Color3.fromRGB(220, 230, 255))
 _G.setAutoRightVisual = VisualSetters.AutoRightEnabled
 
--- Save Button - white neon
 local SaveBtn = Instance.new("TextButton", rightSide)
 SaveBtn.Size = UDim2.new(1, -10 * guiScale, 0, 50 * guiScale)
 SaveBtn.Position = UDim2.new(0, 5 * guiScale, 0, 503 * guiScale)
-SaveBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)    -- white
+SaveBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 SaveBtn.Text = "SAVE CONFIG"
-SaveBtn.TextColor3 = Color3.fromRGB(5, 5, 10)               -- dark text on white
+SaveBtn.TextColor3 = Color3.fromRGB(5, 5, 10)
 SaveBtn.Font = Enum.Font.GothamBold
 SaveBtn.TextSize = 15 * guiScale
 SaveBtn.ZIndex = 3
@@ -1749,41 +1691,33 @@ infoLabel.ZIndex = 3
 
 local guiVisible = true
 
--- Apply loaded config
 task.spawn(function()
     task.wait(3)
-    
     local c = Player.Character
     if not c or not c:FindFirstChild("HumanoidRootPart") then
         c = Player.CharacterAdded:Wait()
         task.wait(1)
     end
-    
     for key, btn in pairs(KeyButtons) do
         if btn and KEYBINDS[key] then
             btn.Text = KEYBINDS[key].Name
         end
     end
-    
     for key, setter in pairs(VisualSetters) do
         if Enabled[key] then
             setter(true, true)
         end
     end
-    
     for key, setter in pairs(SliderSetters) do
         if Values[key] then
             setter(Values[key])
         end
     end
-    
     if Enabled.AntiRagdoll then startAntiRagdoll() end
     if Enabled.AutoSteal then startAutoSteal() end
     if Enabled.Optimizer then enableOptimizer() end
     if Enabled.GalaxySkyBright then enableGalaxySkyBright() end
-    
     task.wait(0.5)
-    
     if Enabled.SpeedBoost then startSpeedBoost() end
     if Enabled.SpinBot then startSpinBot() end
     if Enabled.SpamBat then startSpamBat() end
@@ -1795,10 +1729,8 @@ task.spawn(function()
     if Enabled.AutoRightEnabled then AutoRightEnabled = true startAutoRight() end
 end)
 
--- Input handling
 UserInputService.InputBegan:Connect(function(input, gpe)
     if gpe then return end
-    
     if waitingForKeybind and input.KeyCode ~= Enum.KeyCode.Unknown then
         local k = input.KeyCode
         KEYBINDS[waitingForKeybind] = k
@@ -1808,54 +1740,45 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         waitingForKeybind = nil
         return
     end
-    
     if input.KeyCode == Enum.KeyCode.U then
         guiVisible = not guiVisible
         main.Visible = guiVisible
         return
     end
-    
     if input.KeyCode == Enum.KeyCode.Space then
         spaceHeld = true
         return
     end
-    
     if input.KeyCode == KEYBINDS.SPEED then
         Enabled.SpeedBoost = not Enabled.SpeedBoost
         if VisualSetters.SpeedBoost then VisualSetters.SpeedBoost(Enabled.SpeedBoost) end
         if Enabled.SpeedBoost then startSpeedBoost() else stopSpeedBoost() end
     end
-    
     if input.KeyCode == KEYBINDS.SPIN then
         Enabled.SpinBot = not Enabled.SpinBot
         if VisualSetters.SpinBot then VisualSetters.SpinBot(Enabled.SpinBot) end
         if Enabled.SpinBot then startSpinBot() else stopSpinBot() end
     end
-    
     if input.KeyCode == KEYBINDS.GALAXY then
         Enabled.Galaxy = not Enabled.Galaxy
         if VisualSetters.Galaxy then VisualSetters.Galaxy(Enabled.Galaxy) end
         if Enabled.Galaxy then startGalaxy() else stopGalaxy() end
     end
-    
     if input.KeyCode == KEYBINDS.BATAIMBOT then
         Enabled.BatAimbot = not Enabled.BatAimbot
         if VisualSetters.BatAimbot then VisualSetters.BatAimbot(Enabled.BatAimbot) end
         if Enabled.BatAimbot then startBatAimbot() else stopBatAimbot() end
     end
-    
     if input.KeyCode == KEYBINDS.NUKE then
         local n = getNearestPlayer()
         if n then INSTANT_NUKE(n) end
     end
-    
     if input.KeyCode == KEYBINDS.AUTOLEFT then
         AutoWalkEnabled = not AutoWalkEnabled
         Enabled.AutoWalkEnabled = AutoWalkEnabled
         if VisualSetters.AutoWalkEnabled then VisualSetters.AutoWalkEnabled(AutoWalkEnabled) end
         if AutoWalkEnabled then startAutoWalk() else stopAutoWalk() end
     end
-    
     if input.KeyCode == KEYBINDS.AUTORIGHT then
         AutoRightEnabled = not AutoRightEnabled
         Enabled.AutoRightEnabled = AutoRightEnabled
