@@ -185,6 +185,7 @@ local Enabled = {
     Float = false,
     FullAutoDuel = false,
     TpEnabled = true,
+    LockUIPosition = false, -- New lock UI position toggle
 }
 local Values = {
     BoostSpeed = 30,
@@ -215,6 +216,7 @@ local KEYBINDS = {
     FLOAT = Enum.KeyCode.Unknown,
     FULLAUTODUEL = Enum.KeyCode.Unknown,
     INFJUMP = Enum.KeyCode.X,
+    LOCKUI = Enum.KeyCode.L, -- New keybind for locking UI
 }
 
 -- ============================================================
@@ -225,6 +227,11 @@ local function SaveConfig()
     for k,v in pairs(Enabled) do data[k] = v end
     for k,v in pairs(Values) do data[k] = v end
     for k,v in pairs(KEYBINDS) do data["KEY_"..k] = v.Name end
+    -- Save UI position
+    if main then
+        data["UIPosX"] = main.Position.X.Offset
+        data["UIPosY"] = main.Position.Y.Offset
+    end
     local ok = false
     if writefile then
         pcall(function() writefile(ConfigFileName, HttpService:JSONEncode(data)); ok=true end)
@@ -246,6 +253,10 @@ local function LoadConfig()
                         local ok,kc = pcall(function() return Enum.KeyCode[data[key]] end)
                         if ok and kc then KEYBINDS[k] = kc end
                     end
+                end
+                -- Load UI position if available
+                if data["UIPosX"] and data["UIPosY"] and main then
+                    main.Position = UDim2.new(0, data["UIPosX"], 0, data["UIPosY"])
                 end
             end
         end
@@ -1219,8 +1230,22 @@ local main = Instance.new("Frame", sg)
 main.Name="FIVE_Main"
 main.Size=UDim2.new(0, WIN_W, 0, WIN_H)
 main.Position=isMobile and UDim2.new(0.5,-WIN_W/2,0.5,-WIN_H/2) or UDim2.new(1,-(WIN_W+16),0,16)
-main.BackgroundColor3=C.bg; main.BorderSizePixel=0; main.Active=true; main.Draggable=not isMobile
+main.BackgroundColor3=C.bg; main.BorderSizePixel=0; main.Active=true; 
+-- Make draggable only if LockUIPosition is false
+main.Draggable = not isMobile and not Enabled.LockUIPosition
 rc(main, CR); st(main, 3, C.green, 0)
+
+-- Lock UI indicator
+local lockIndicator = Instance.new("TextLabel", main)
+lockIndicator.Size = UDim2.new(0, 20, 0, 20)
+lockIndicator.Position = UDim2.new(0, 10, 0, TITLE_H - 25)
+lockIndicator.BackgroundTransparency = 1
+lockIndicator.Text = "🔓"
+lockIndicator.TextColor3 = C.white
+lockIndicator.Font = Enum.Font.GothamBold
+lockIndicator.TextSize = 14
+lockIndicator.Visible = not Enabled.LockUIPosition
+
 if isMobile then
     local mobDragging = false
     local mobDragStart, mobFrameStart
@@ -1230,6 +1255,7 @@ if isMobile then
     titleHitbox.Position = UDim2.new(0,0,0,0)
     titleHitbox.BackgroundTransparency = 1; titleHitbox.Text = ""; titleHitbox.ZIndex = 20
     titleHitbox.InputBegan:Connect(function(inp)
+        if Enabled.LockUIPosition then return end -- Don't allow dragging if locked
         if inp.UserInputType == Enum.UserInputType.Touch then
             mobDragging = true
             mobDragStart = inp.Position
@@ -1397,6 +1423,13 @@ local function createToggle(order, labelTxt, enabledKey, callback, _unused, keyb
         playSound("rbxassetid://6895079813", 0.3, isOn and 1.1 or 0.9)
         if enabledKey == "InfiniteJump" then
             infinityJumpEnabled = isOn
+        elseif enabledKey == "LockUIPosition" then
+            -- Update draggable property
+            main.Draggable = not isOn
+            if lockIndicator then
+                lockIndicator.Text = isOn and "🔒" or "🔓"
+                lockIndicator.Visible = true
+            end
         end
     end
     if isMobile then
@@ -1624,6 +1657,17 @@ if not isMobile then
     abVisualSetter = function(on) if VisualSetters.Aimbot then VisualSetters.Aimbot(on,true) end end
 end
 
+createSectionHeader(o,"UI SETTINGS")
+o+=1
+createToggle(o,"Lock UI Position","LockUIPosition", function(s) 
+    Enabled.LockUIPosition = s
+    main.Draggable = not isMobile and not s
+    if lockIndicator then
+        lockIndicator.Text = s and "🔒" or "🔓"
+    end
+end, nil, "LOCKUI")
+o+=1
+
 createSectionHeader(o,"TELEPORT")
 o+=1
 createToggle(o,"Enable TP","TpEnabled", function(s) Enabled.TpEnabled=s end, nil, nil)
@@ -1693,7 +1737,7 @@ createButtonRow(o,"🗑 RESET CONFIG",Color3.fromRGB(55,10,10),C.dangerDark, fun
     KEYBINDS.AUTOLEFT=Enum.KeyCode.Z; KEYBINDS.AUTORIGHT=Enum.KeyCode.C
     KEYBINDS.ANTIRAGDOLL=Enum.KeyCode.Unknown; KEYBINDS.AIMBOT=Enum.KeyCode.Unknown
     KEYBINDS.FLOAT=Enum.KeyCode.Unknown; KEYBINDS.FULLAUTODUEL=Enum.KeyCode.Unknown
-    KEYBINDS.INFJUMP=Enum.KeyCode.X
+    KEYBINDS.INFJUMP=Enum.KeyCode.X; KEYBINDS.LOCKUI=Enum.KeyCode.L
     for _,setter in pairs(VisualSetters) do setter(false,true) end
     for k,setter in pairs(SliderSetters) do if Values[k] then setter(Values[k]) end end
     for k,badgeBtn in pairs(KeyBindBtns) do local kc=KEYBINDS[k] badgeBtn.Text = (kc==Enum.KeyCode.Unknown) and "—" or kc.Name end
@@ -1802,6 +1846,7 @@ if isMobile then
         local tapCallback = nil
 
         hitBtn.InputBegan:Connect(function(inp)
+            if Enabled.LockUIPosition then return end -- Don't allow dragging if locked
             if inp.UserInputType ~= Enum.UserInputType.Touch then return end
             touchActive = true
             touchId = inp
@@ -1956,6 +2001,14 @@ task.spawn(function()
     if Enabled.FullAutoDuel then startFullAutoDuel() end
     if Enabled.Aimbot and not abActive then abToggle() end
     infinityJumpEnabled = Enabled.InfiniteJump
+    -- Update lock UI state
+    if Enabled.LockUIPosition then
+        main.Draggable = false
+        if lockIndicator then
+            lockIndicator.Text = "🔒"
+            lockIndicator.Visible = true
+        end
+    end
 end)
 
 -- ============================================================
@@ -2020,6 +2073,14 @@ local function dispatchKey(kc)
         infinityJumpEnabled=Enabled.InfiniteJump
         if VisualSetters.InfiniteJump then VisualSetters.InfiniteJump(Enabled.InfiniteJump) end
     end
+    if kc==KEYBINDS.LOCKUI and KEYBINDS.LOCKUI~=Enum.KeyCode.Unknown then
+        Enabled.LockUIPosition=not Enabled.LockUIPosition
+        if VisualSetters.LockUIPosition then VisualSetters.LockUIPosition(Enabled.LockUIPosition) end
+        main.Draggable = not isMobile and not Enabled.LockUIPosition
+        if lockIndicator then
+            lockIndicator.Text = Enabled.LockUIPosition and "🔒" or "🔓"
+        end
+    end
 end
 
 -- ============================================================
@@ -2080,3 +2141,4 @@ print("FIVE HUB Loaded — Press U to toggle GUI.")
 print("Auto Grab updated from .gg/sourceshub - Cooldown: " .. Values.StealCooldown .. "s, Hold: " .. Values.HoldDuration .. "s")
 print("TP LEFT and TP RIGHT added with toggle and speed control")
 print("Auto Walk Left/Right updated with new coolhub source!")
+print("Lock UI Position added — Press L to toggle or use the toggle in UI Settings")
