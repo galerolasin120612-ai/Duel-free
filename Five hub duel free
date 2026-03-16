@@ -1989,7 +1989,7 @@ UserInputService.InputBegan:Connect(function(input, gpe)
 end)
 
 -- ════════════════════════════════════════════════════════════════════════════════
--- LOCK UI POSITION CARD (with on/off toggle) - nasa baba kasama ng ibang features
+-- LOCK UI POSITION CARD (with on/off toggle) - FIXED VERSION
 -- ════════════════════════════════════════════════════════════════════════════════
 do
     local wrapper = Instance.new("Frame", contentFrame)
@@ -2043,14 +2043,21 @@ do
             -- Save current positions before locking
             saveCurrentPositions()
             
-            -- Disable dragging on all draggable elements (only floating UI, not main panel)
-            ProgressBarContainer.Active = false
-            menuBtn.Active = false
+            -- LOCKED MODE: Disable dragging but KEEP click functionality
+            -- We only disable dragging by setting Active = false on draggable elements
+            -- The buttons themselves (floatingBtns) are frames with TextButton detectors inside
+            -- The TextButton detectors will still work because they're separate from the Frame's Active property
+            
+            ProgressBarContainer.Active = false  -- Disable dragging on progress bar
+            menuBtn.Active = false                -- Disable dragging on menu button
+            
+            -- For floating buttons, we only want to disable dragging, not clicking
+            -- The frames contain TextButton detectors that handle clicks
             for _, b in ipairs(floatingBtns) do
-                b.Active = false
+                b.Active = false  -- This only disables frame dragging, the TextButton inside still works
             end
         else
-            -- Enable dragging on all draggable elements
+            -- UNLOCKED MODE: Enable dragging on all draggable elements
             ProgressBarContainer.Active = true
             menuBtn.Active = true
             for _, b in ipairs(floatingBtns) do
