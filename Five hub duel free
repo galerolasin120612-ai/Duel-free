@@ -35,6 +35,7 @@ local function saveCurrentPositions()
         progressBar = ProgressBarContainer and ProgressBarContainer.Position,
         floatingBtns = {}
     }
+    originalPositions.floatingBtns = {}
     for _, b in ipairs(floatingBtns or {}) do
         originalPositions.floatingBtns[b.Name] = b.Position
     end
@@ -275,10 +276,10 @@ menuBtn.MouseLeave:Connect(function()
 end)
 
 -- ════════════════════════════════════════════════════════════════════════════════
--- FEATURES PANEL
+-- FEATURES PANEL (MAIN GUI - HINDI LOCKED)
 -- ════════════════════════════════════════════════════════════════════════════════
 local PANEL_W = 360
-local PANEL_H = 650  -- Tumaas para sa mga bagong buttons
+local PANEL_H = 650
 local HEADER_H = 52
 
 local panel = Instance.new("Frame", sg)
@@ -1973,6 +1974,14 @@ end)
 UserInputService.InputBegan:Connect(function(input, gpe)
     if gpe then return end
     if input.KeyCode == Enum.KeyCode.U then
+        guiVisible = not guiVisible
+        menuBtn.Visible = guiVisible
+        titleBar.Visible = guiVisible
+        ProgressBarContainer.Visible = guiVisible
+        if not guiVisible then
+            panel.Visible = false
+            panelOpen = false
+        end
         for _, b in ipairs(floatingBtns) do
             b.Visible = guiVisible
         end
@@ -1980,7 +1989,7 @@ UserInputService.InputBegan:Connect(function(input, gpe)
 end)
 
 -- ════════════════════════════════════════════════════════════════════════════════
--- LOCK UI POSITION CARD (with on/off toggle)
+-- LOCK UI POSITION CARD (with on/off toggle) - nasa baba kasama ng ibang features
 -- ════════════════════════════════════════════════════════════════════════════════
 do
     local wrapper = Instance.new("Frame", contentFrame)
@@ -1988,7 +1997,7 @@ do
     wrapper.BackgroundTransparency = 1
     wrapper.BorderSizePixel = 0
     wrapper.ZIndex = 11
-    wrapper.LayoutOrder = 9996  -- Para nasa baba
+    wrapper.LayoutOrder = 9995  -- Para nasa baba
 
     local card = Instance.new("Frame", wrapper)
     card.Size = UDim2.new(1, 0, 1, 0)
@@ -2034,7 +2043,7 @@ do
             -- Save current positions before locking
             saveCurrentPositions()
             
-            -- Disable dragging on all draggable elements
+            -- Disable dragging on all draggable elements (only floating UI, not main panel)
             ProgressBarContainer.Active = false
             menuBtn.Active = false
             for _, b in ipairs(floatingBtns) do
@@ -2263,8 +2272,7 @@ end
 closeBtn.MouseButton1Click:Connect(closePanel)
 
 menuBtn.MouseButton1Click:Connect(function()
-    if UILocked then return end  -- Cannot open if locked
-    panelOpen = not panelOpen
+    panelOpen = not panelOpen  -- Pwedeng buksan kahit naka-lock
     if panelOpen then
         panel.Size = UDim2.new(0, PANEL_W, 0, 0)
         panel.Visible = true
@@ -2305,6 +2313,7 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         guiVisible = not guiVisible
         menuBtn.Visible = guiVisible
         titleBar.Visible = guiVisible
+        ProgressBarContainer.Visible = guiVisible
         if not guiVisible then
             panel.Visible = false
             panelOpen = false
