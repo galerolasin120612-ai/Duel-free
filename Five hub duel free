@@ -24,6 +24,40 @@ sg.ResetOnSpawn = false
 sg.IgnoreGuiInset = true
 sg.Parent = Player.PlayerGui
 
+-- Global variables for UI lock
+local UILocked = false
+local originalPositions = {}
+
+-- Function to save current positions before locking
+local function saveCurrentPositions()
+    originalPositions = {
+        menuBtn = menuBtn and menuBtn.Position,
+        progressBar = ProgressBarContainer and ProgressBarContainer.Position,
+        floatingBtns = {}
+    }
+    for _, b in ipairs(floatingBtns or {}) do
+        originalPositions.floatingBtns[b.Name] = b.Position
+    end
+end
+
+-- Function to restore positions when unlocking
+local function restorePositions()
+    if originalPositions.menuBtn and menuBtn then
+        menuBtn.Position = originalPositions.menuBtn
+    end
+    if originalPositions.progressBar and ProgressBarContainer then
+        ProgressBarContainer.Position = originalPositions.progressBar
+    end
+    for name, pos in pairs(originalPositions.floatingBtns) do
+        for _, b in ipairs(floatingBtns or {}) do
+            if b.Name == name then
+                b.Position = pos
+                break
+            end
+        end
+    end
+end
+
 -- ════════════════════════════════════════════════════════════════════════════════
 -- AUTO STEAL PROGRESS BAR
 -- ════════════════════════════════════════════════════════════════════════════════
@@ -172,32 +206,6 @@ durationBox.FocusLost:Connect(function()
     end
 end)
 
--- Drag logic for progress bar
-local pbDragging, pbDragStart, pbDragPos = false, nil, nil
-ProgressBarContainer.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        pbDragging = true
-        pbDragStart = Vector2.new(input.Position.X, input.Position.Y)
-        pbDragPos = ProgressBarContainer.Position
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if not pbDragging then return end
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        local d = Vector2.new(input.Position.X, input.Position.Y) - pbDragStart
-        ProgressBarContainer.Position = UDim2.new(
-            pbDragPos.X.Scale, pbDragPos.X.Offset + d.X,
-            pbDragPos.Y.Scale, pbDragPos.Y.Offset + d.Y)
-    end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        pbDragging = false
-    end
-end)
-
 -- ════════════════════════════════════════════════════════════════════════════════
 -- FLOATING "SEVEN HUB" TITLE BAR
 -- ════════════════════════════════════════════════════════════════════════════════
@@ -266,36 +274,11 @@ menuBtn.MouseLeave:Connect(function()
     TweenService:Create(menuBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(12, 4, 20)}):Play()
 end)
 
-local mbDragging, mbDragMouse, mbDragPos = false, nil, nil
-menuBtn.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        mbDragging = true
-        mbDragMouse = Vector2.new(input.Position.X, input.Position.Y)
-        mbDragPos = menuBtn.Position
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if not mbDragging then return end
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        local d = Vector2.new(input.Position.X, input.Position.Y) - mbDragMouse
-        menuBtn.Position = UDim2.new(
-            mbDragPos.X.Scale, mbDragPos.X.Offset + d.X,
-            mbDragPos.Y.Scale, mbDragPos.Y.Offset + d.Y)
-    end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        mbDragging = false
-    end
-end)
-
 -- ════════════════════════════════════════════════════════════════════════════════
 -- FEATURES PANEL
 -- ════════════════════════════════════════════════════════════════════════════════
 local PANEL_W = 360
-local PANEL_H = 520
+local PANEL_H = 650  -- Tumaas para sa mga bagong buttons
 local HEADER_H = 52
 
 local panel = Instance.new("Frame", sg)
@@ -388,7 +371,7 @@ contentPad.PaddingTop = UDim.new(0, 4)
 contentPad.PaddingBottom = UDim.new(0, 8)
 
 -- ════════════════════════════════════════════════════════════════════════════════
--- ALL FEATURE LOGIC
+-- ALL FEATURE LOGIC (same as before)
 -- ════════════════════════════════════════════════════════════════════════════════
 local Connections = {}
 local BoostSpeed = 30
@@ -1675,86 +1658,6 @@ Player.CharacterAdded:Connect(function(char)
 end)
 
 -- ════════════════════════════════════════════════════════════════════════════════
--- PANEL OPEN / CLOSE
--- ════════════════════════════════════════════════════════════════════════════════
-local panelOpen = false
-
-local function closePanel()
-    local t = TweenService:Create(panel, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, PANEL_W, 0, 0)})
-    t:Play()
-    t.Completed:Connect(function()
-        panel.Visible = false
-    end)
-    panelOpen = false
-end
-
-closeBtn.MouseButton1Click:Connect(closePanel)
-
-menuBtn.MouseButton1Click:Connect(function()
-    panelOpen = not panelOpen
-    if panelOpen then
-        panel.Size = UDim2.new(0, PANEL_W, 0, 0)
-        panel.Visible = true
-        TweenService:Create(panel, TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, PANEL_W, 0, PANEL_H)}):Play()
-    else
-        closePanel()
-    end
-end)
-
--- ════════════════════════════════════════════════════════════════════════════════
--- KEYBINDS
--- ════════════════════════════════════════════════════════════════════════════════
-local guiVisible = true
-
-UserInputService.InputBegan:Connect(function(input, gpe)
-    if gpe then return end
-    if input.KeyCode == Enum.KeyCode.U then
-        guiVisible = not guiVisible
-        menuBtn.Visible = guiVisible
-        titleBar.Visible = guiVisible
-        if not guiVisible then
-            panel.Visible = false
-            panelOpen = false
-        end
-    end
-    if input.KeyCode == Enum.KeyCode.V then
-        speedBoostEnabled = not speedBoostEnabled
-        if speedBoostEnabled then
-            startSpeedBoost()
-        else
-            stopSpeedBoost()
-        end
-    end
-end)
-
-Player.CharacterAdded:Connect(function()
-    task.wait(1)
-    if speedBoostEnabled then
-        stopSpeedBoost()
-        task.wait(0.1)
-        startSpeedBoost()
-    end
-    if spamBatEnabled then
-        stopSpamBat()
-        task.wait(0.1)
-        startSpamBat()
-    end
-    if unwalkEnabled then
-        startUnwalk()
-    end
-    if spinBotEnabled then
-        stopSpinBot()
-        task.wait(0.1)
-        startSpinBot()
-    end
-    if batAimbotEnabled then
-        stopBatAimbot()
-        task.wait(0.1)
-        startBatAimbot()
-    end
-end)
-
--- ════════════════════════════════════════════════════════════════════════════════
 -- AUTO RIGHT / AUTO LEFT PATH LOGIC
 -- ════════════════════════════════════════════════════════════════════════════════
 local VELOCITY_SPEED = 59.2
@@ -1924,6 +1827,7 @@ local function createFloatingBtn(labelText, xOffset, yOffset, onActivate)
 
     detector.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if UILocked then return end -- Prevent dragging if locked
             isDragging = true
             didMove = false
             dStart = input.Position
@@ -2076,7 +1980,91 @@ UserInputService.InputBegan:Connect(function(input, gpe)
 end)
 
 -- ════════════════════════════════════════════════════════════════════════════════
--- SAVE / LOAD CONFIG (positions + settings)
+-- LOCK UI POSITION CARD (with on/off toggle)
+-- ════════════════════════════════════════════════════════════════════════════════
+do
+    local wrapper = Instance.new("Frame", contentFrame)
+    wrapper.Size = UDim2.new(1, 0, 0, 52)
+    wrapper.BackgroundTransparency = 1
+    wrapper.BorderSizePixel = 0
+    wrapper.ZIndex = 11
+    wrapper.LayoutOrder = 9996  -- Para nasa baba
+
+    local card = Instance.new("Frame", wrapper)
+    card.Size = UDim2.new(1, 0, 1, 0)
+    card.BackgroundColor3 = C.cardBg
+    card.BorderSizePixel = 0
+    card.ZIndex = 11
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0, 12)
+
+    local stroke = Instance.new("UIStroke", card)
+    stroke.Thickness = 1.5
+    stroke.Color = C.greenDim
+    stroke.Transparency = 0.3
+
+    local dot = Instance.new("Frame", card)
+    dot.Size = UDim2.new(0, 10, 0, 10)
+    dot.Position = UDim2.new(0, 12, 0.5, -5)
+    dot.BackgroundColor3 = C.greenDim
+    dot.BorderSizePixel = 0
+    dot.ZIndex = 12
+    Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
+
+    local lbl = Instance.new("TextLabel", card)
+    lbl.Size = UDim2.new(1, -30, 1, 0)
+    lbl.Position = UDim2.new(0, 30, 0, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = "🔒 Lock UI Position"
+    lbl.TextColor3 = Color3.fromRGB(210, 210, 230)
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextSize = 15
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.ZIndex = 12
+
+    local isOn = UILocked  -- Initial state
+
+    local function setVisual(state)
+        isOn = state
+        UILocked = state
+        TweenService:Create(dot, TweenInfo.new(0.2), {BackgroundColor3 = state and C.green or C.greenDim}):Play()
+        TweenService:Create(stroke, TweenInfo.new(0.2), {Color = state and C.green or C.greenDim, Transparency = state and 0 or 0.3}):Play()
+        TweenService:Create(card, TweenInfo.new(0.2), {BackgroundColor3 = state and C.cardBgOn or C.cardBg}):Play()
+        
+        if state then
+            -- Save current positions before locking
+            saveCurrentPositions()
+            
+            -- Disable dragging on all draggable elements
+            ProgressBarContainer.Active = false
+            menuBtn.Active = false
+            for _, b in ipairs(floatingBtns) do
+                b.Active = false
+            end
+        else
+            -- Enable dragging on all draggable elements
+            ProgressBarContainer.Active = true
+            menuBtn.Active = true
+            for _, b in ipairs(floatingBtns) do
+                b.Active = true
+            end
+            -- Restore positions to pre-lock state
+            restorePositions()
+        end
+    end
+
+    local clickBtn = Instance.new("TextButton", card)
+    clickBtn.Size = UDim2.new(1, 0, 1, 0)
+    clickBtn.BackgroundTransparency = 1
+    clickBtn.Text = ""
+    clickBtn.ZIndex = 14
+
+    clickBtn.MouseButton1Click:Connect(function()
+        setVisual(not isOn)
+    end)
+end
+
+-- ════════════════════════════════════════════════════════════════════════════════
+-- SAVE / LOAD / RESET CONFIG (positions + settings)
 -- ════════════════════════════════════════════════════════════════════════════════
 local function posToTable(pos)
     return {xs=pos.X.Scale, xo=pos.X.Offset, ys=pos.Y.Scale, yo=pos.Y.Offset}
@@ -2096,7 +2084,6 @@ local function saveConfig()
         settings = {
             BoostSpeed = BoostSpeed,
             StealSpeed = StealSpeed,
-            SpinSpeed = SpinSpeed,
             STEAL_RADIUS = STEAL_RADIUS,
             STEAL_DURATION = STEAL_DURATION,
         }
@@ -2134,10 +2121,36 @@ local function loadConfig()
         if data.settings then
             if data.settings.BoostSpeed then BoostSpeed = data.settings.BoostSpeed end
             if data.settings.StealSpeed then StealSpeed = data.settings.StealSpeed end
-            if data.settings.SpinSpeed then SpinSpeed = data.settings.SpinSpeed end
             if data.settings.STEAL_RADIUS then STEAL_RADIUS = data.settings.STEAL_RADIUS end
             if data.settings.STEAL_DURATION then STEAL_DURATION = data.settings.STEAL_DURATION end
         end
+    end)
+end
+
+local function resetConfig()
+    -- Reset to default positions
+    menuBtn.Position = UDim2.new(0, 24, 0.5, -22)
+    ProgressBarContainer.Position = UDim2.new(0.5, -170, 1, -120)
+    
+    -- Reset floating buttons to default positions
+    for i, b in ipairs(floatingBtns) do
+        if i == 1 then b.Position = UDim2.new(0, 24, 0.5, -130)
+        elseif i == 2 then b.Position = UDim2.new(0, 24, 0.5, -72)
+        elseif i == 3 then b.Position = UDim2.new(0, 24, 0.5, -14)
+        elseif i == 4 then b.Position = UDim2.new(0, 24, 0.5, 44)
+        end
+    end
+    
+    -- Reset settings to defaults
+    BoostSpeed = 30
+    StealSpeed = 60
+    STEAL_RADIUS = 20
+    STEAL_DURATION = 0.2
+    
+    -- Update input boxes
+    pcall(function()
+        radiusBox.Text = tostring(STEAL_RADIUS)
+        durationBox.Text = string.format("%.1f", STEAL_DURATION)
     end)
 end
 
@@ -2150,20 +2163,23 @@ pcall(function()
     durationBox.Text = string.format("%.1f", STEAL_DURATION)
 end)
 
--- Save button inside the panel
+-- ════════════════════════════════════════════════════════════════════════════════
+-- SAVE AND RESET BUTTONS (pinakababa)
+-- ════════════════════════════════════════════════════════════════════════════════
+-- Save button
 do
     local saveWrapper = Instance.new("Frame", contentFrame)
     saveWrapper.Size = UDim2.new(1, 0, 0, 0)
     saveWrapper.AutomaticSize = Enum.AutomaticSize.Y
     saveWrapper.BackgroundTransparency = 1
-    saveWrapper.LayoutOrder = 9999
+    saveWrapper.LayoutOrder = 9997
 
     local saveBtn = Instance.new("TextButton", saveWrapper)
     saveBtn.Size = UDim2.new(1, -24, 0, 44)
     saveBtn.Position = UDim2.new(0, 12, 0, 6)
     saveBtn.BackgroundColor3 = C.green
     saveBtn.BorderSizePixel = 0
-    saveBtn.Text = "💾 Save Layout & Config"
+    saveBtn.Text = "💾 SAVE CONFIG"
     saveBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
     saveBtn.Font = Enum.Font.GothamBold
     saveBtn.TextSize = 15
@@ -2177,14 +2193,162 @@ do
 
     saveBtn.MouseButton1Click:Connect(function()
         saveConfig()
-        saveBtn.Text = "✅ Saved!"
+        saveBtn.Text = "✅ SAVED!"
         saveBtn.BackgroundColor3 = Color3.fromRGB(34, 197, 94)
         task.delay(1.8, function()
-            saveBtn.Text = "💾 Save Layout & Config"
+            saveBtn.Text = "💾 SAVE CONFIG"
             saveBtn.BackgroundColor3 = C.green
         end)
     end)
 end
+
+-- Reset button
+do
+    local resetWrapper = Instance.new("Frame", contentFrame)
+    resetWrapper.Size = UDim2.new(1, 0, 0, 0)
+    resetWrapper.AutomaticSize = Enum.AutomaticSize.Y
+    resetWrapper.BackgroundTransparency = 1
+    resetWrapper.LayoutOrder = 9998
+
+    local resetBtn = Instance.new("TextButton", resetWrapper)
+    resetBtn.Size = UDim2.new(1, -24, 0, 44)
+    resetBtn.Position = UDim2.new(0, 12, 0, 6)
+    resetBtn.BackgroundColor3 = Color3.fromRGB(239, 68, 68)  -- Red color for reset
+    resetBtn.BorderSizePixel = 0
+    resetBtn.Text = "🔄 RESET CONFIG"
+    resetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    resetBtn.Font = Enum.Font.GothamBold
+    resetBtn.TextSize = 15
+    resetBtn.ZIndex = 5
+    Instance.new("UICorner", resetBtn).CornerRadius = UDim.new(0, 10)
+
+    local resetBtnStroke = Instance.new("UIStroke", resetBtn)
+    resetBtnStroke.Thickness = 1.5
+    resetBtnStroke.Color = Color3.fromRGB(255, 200, 200)
+    resetBtnStroke.Transparency = 0.5
+
+    resetBtn.MouseButton1Click:Connect(function()
+        resetConfig()
+        resetBtn.Text = "✅ RESET DONE!"
+        resetBtn.BackgroundColor3 = Color3.fromRGB(34, 197, 94)
+        task.delay(1.8, function()
+            resetBtn.Text = "🔄 RESET CONFIG"
+            resetBtn.BackgroundColor3 = Color3.fromRGB(239, 68, 68)
+        end)
+    end)
+end
+
+-- Add some spacing at the very bottom
+do
+    local spacer = Instance.new("Frame", contentFrame)
+    spacer.Size = UDim2.new(1, 0, 0, 12)
+    spacer.BackgroundTransparency = 1
+    spacer.LayoutOrder = 9999
+end
+
+-- ════════════════════════════════════════════════════════════════════════════════
+-- PANEL OPEN / CLOSE
+-- ════════════════════════════════════════════════════════════════════════════════
+local panelOpen = false
+
+local function closePanel()
+    local t = TweenService:Create(panel, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, PANEL_W, 0, 0)})
+    t:Play()
+    t.Completed:Connect(function()
+        panel.Visible = false
+    end)
+    panelOpen = false
+end
+
+closeBtn.MouseButton1Click:Connect(closePanel)
+
+menuBtn.MouseButton1Click:Connect(function()
+    if UILocked then return end  -- Cannot open if locked
+    panelOpen = not panelOpen
+    if panelOpen then
+        panel.Size = UDim2.new(0, PANEL_W, 0, 0)
+        panel.Visible = true
+        TweenService:Create(panel, TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, PANEL_W, 0, PANEL_H)}):Play()
+    else
+        closePanel()
+    end
+end)
+
+-- Modify menu button drag to respect lock
+menuBtn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if UILocked then return end
+        mbDragging = true
+        mbDragMouse = Vector2.new(input.Position.X, input.Position.Y)
+        mbDragPos = menuBtn.Position
+    end
+end)
+
+-- Modify progress bar drag to respect lock
+ProgressBarContainer.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if UILocked then return end
+        pbDragging = true
+        pbDragStart = Vector2.new(input.Position.X, input.Position.Y)
+        pbDragPos = ProgressBarContainer.Position
+    end
+end)
+
+-- ════════════════════════════════════════════════════════════════════════════════
+-- KEYBINDS
+-- ════════════════════════════════════════════════════════════════════════════════
+local guiVisible = true
+
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.KeyCode == Enum.KeyCode.U then
+        guiVisible = not guiVisible
+        menuBtn.Visible = guiVisible
+        titleBar.Visible = guiVisible
+        if not guiVisible then
+            panel.Visible = false
+            panelOpen = false
+        end
+        for _, b in ipairs(floatingBtns) do
+            b.Visible = guiVisible
+        end
+    end
+    if input.KeyCode == Enum.KeyCode.V then
+        speedBoostEnabled = not speedBoostEnabled
+        if speedBoostEnabled then
+            startSpeedBoost()
+        else
+            stopSpeedBoost()
+        end
+    end
+end)
+
+Player.CharacterAdded:Connect(function()
+    task.wait(1)
+    if speedBoostEnabled then
+        stopSpeedBoost()
+        task.wait(0.1)
+        startSpeedBoost()
+    end
+    if spamBatEnabled then
+        stopSpamBat()
+        task.wait(0.1)
+        startSpamBat()
+    end
+    if unwalkEnabled then
+        startUnwalk()
+    end
+    if spinBotEnabled then
+        stopSpinBot()
+        task.wait(0.1)
+        startSpinBot()
+    end
+    if batAimbotEnabled then
+        stopBatAimbot()
+        task.wait(0.1)
+        startBatAimbot()
+    end
+end)
 
 print("🔰 SEVEN HUB LOADED SUCCESSFULLY 🔰")
 print("Press U to toggle UI | Press V for Speed Boost")
